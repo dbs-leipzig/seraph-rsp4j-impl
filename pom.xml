@@ -9,12 +9,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <github.release>${project.version}</github.release>
+        <lombok.version>1.18.20</lombok.version>
     </properties>
 
     <packaging>pom</packaging>
     <modules>
         <module>api</module>
         <module>yasper</module>
+        <module>seraph</module>
         <module>examples</module>
     </modules>
 
@@ -48,7 +50,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.12</version>
+                <version>${lombok.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

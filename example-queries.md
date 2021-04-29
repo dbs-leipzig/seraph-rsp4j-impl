@@ -1,7 +1,7 @@
 # RSP-QL Example Queries
 
-## Background data
-The following data exists at the URI ```http://temp-data.org#```:
+## Background org.streamreasoning.gsp.syntax.data
+The following org.streamreasoning.gsp.syntax.data exists at the URI ```http://temp-org.streamreasoning.gsp.syntax.data.org#```:
 ```
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix dbp: <http://dbpedia.org/resource/> .
@@ -16,7 +16,7 @@ dbp:London a dbo:City .
 
 ```
 
-### Streaming data
+### Streaming org.streamreasoning.gsp.syntax.data
 The following stream is available as ```http://sensor-stream.org/```
 
 ```
