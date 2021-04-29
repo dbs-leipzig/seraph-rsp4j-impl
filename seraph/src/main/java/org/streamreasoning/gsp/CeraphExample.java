@@ -25,13 +25,13 @@ public class CeraphExample {
 
         Seraph sr = new Seraph(ec);
 
-        ContinuousQuery q = QueryFactory.parse("" +
+        ContinuousQuery q = QueryFactory.   parse("" +
                 "REGISTER <http://example> {\n" +
                 "FROM STREAM  <http://stream1> STARTING FROM LATEST\n" +
-                "WITH WINDOW RANGE PT1M\n" +
+                "WITH WINDOW RANGE PT10S\n" +
                 "MATCH (n:Person)-[p]->(n1:Person)\n" +
                 "RETURN *\n" +
-                "EMIT SNAPSHOT EVERY PT5M INTO <http://stream2> }\n");
+                "EMIT SNAPSHOT EVERY PT5S INTO <http://stream2> }\n");
 
         ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>> cqe = sr.register(q);
 

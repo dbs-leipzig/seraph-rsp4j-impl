@@ -132,18 +132,26 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
                 r2s);
 
 
-        SeraphTimeWindowOperatorFactory wo = new SeraphTimeWindowOperatorFactory(5000, 5000, time, Tick.TIME_DRIVEN, r, ReportGrain.SINGLE, cqe, db);
+        q.getWindowMap().forEach((windowNode, webStream) -> {
+
+            SeraphTimeWindowOperatorFactory wo = new SeraphTimeWindowOperatorFactory(windowNode.getRange(), windowNode.getStep(), time, Tick.TIME_DRIVEN, r, ReportGrain.SINGLE, cqe, db);
+
+            in.stream().filter(s-> {
+
+               return s.uri().equals(webStream.uri());
+
+            }).forEach(s -> {
+
+                TimeVarying<PGraph> t = wo.apply(s, RDFUtils.createIRI(s.uri()));
+
+                sds.add(t);
 
 
-        in.forEach(s -> {
-
-
-            TimeVarying<PGraph> t = wo.apply(s, RDFUtils.createIRI(s.uri().replace("<", "").replace(">", "")));
-
-            sds.add(t);
-
-
+            });
         });
+
+
+
 
 //        q.getWindowMap().forEach((WindowNode wo, WebStream s) -> {
 //            try {

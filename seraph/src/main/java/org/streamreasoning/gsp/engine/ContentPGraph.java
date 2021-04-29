@@ -74,10 +74,13 @@ public class ContentPGraph implements Content<PGraph, PGraph> {
 
                 //TODO add the name of the window operator.
                 //one can see this as a
-                pGraph.nodes().forEach(node -> {
-                    Node node1 = tx.createNode(Label.label(p));
-                    node1.setProperty("name", node);
-                    node1.setProperty("__op", "win1");
+                pGraph.nodes().forEach(name -> {
+                    Node n = tx.findNode(Label.label(p), "name", name);
+                    if (n == null) {
+                        n = tx.createNode(Label.label(p));
+                        n.setProperty("name", name);
+//                        node1.setProperty("__op", "win1");
+                    }
                 });
                 pGraph.edges().forEach(edge -> {
                     Node firstNode = tx.findNode(Label.label(p), "name", edge[0]);

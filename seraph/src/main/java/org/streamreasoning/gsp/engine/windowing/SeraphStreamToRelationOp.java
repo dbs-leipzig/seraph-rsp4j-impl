@@ -75,12 +75,13 @@ public class SeraphStreamToRelationOp extends ObservableStreamToRelationOp<PGrap
 
         scope(t_e);
 
+        //todo what if scope returns the active window?
         active_windows.keySet().forEach(
-                w -> {
-                    if (w.getO() <= t_e && t_e < w.getC()) {
-                        active_windows.get(w).add(e);
-                    } else if (t_e > w.getC()) {
-                        schedule_for_eviction(w);
+                scope -> {
+                    if (scope.getO() <= t_e && t_e < scope.getC()) {
+                        active_windows.get(scope).add(e);
+                    } else if (t_e > scope.getC()) {
+                        schedule_for_eviction(scope);
                     }
                 });
 

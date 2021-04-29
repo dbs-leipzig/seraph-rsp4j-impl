@@ -1,21 +1,25 @@
 package org.streamreasoning.gsp.syntax;
 
 
+import org.streamreasoning.rsp4j.api.RDFUtils;
 import org.streamreasoning.rsp4j.api.enums.StreamOperator;
 import org.streamreasoning.rsp4j.api.operators.s2r.syntax.WindowNode;
 import org.streamreasoning.rsp4j.api.querying.ContinuousQuery;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
 import org.streamreasoning.rsp4j.api.secret.time.TimeFactory;
 import org.streamreasoning.rsp4j.api.stream.web.WebStream;
+import org.streamreasoning.rsp4j.api.stream.web.WebStreamImpl;
+import org.streamreasoning.rsp4j.yasper.querying.operators.windowing.WindowNodeImpl;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SeraphQL implements ContinuousQuery {
 
     private R2R r2r;
     private Map<String, S2R> inputs = new HashMap<>();
     private Map<String, R2S> outputs = new HashMap<>();
-
+    private Map<WindowNode, WebStream> map = new HashMap<>();
 
     public SeraphQL(R2R r2r, Map<String, S2R> inputs, Map<String, R2S> outputs) {
         this.r2r = r2r;
@@ -105,7 +109,16 @@ public class SeraphQL implements ContinuousQuery {
 
     @Override
     public Map<? extends WindowNode, WebStream> getWindowMap() {
-        return null;
+        AtomicInteger i = new AtomicInteger();
+        outputs.forEach((out, r2S) -> {
+            inputs.forEach((k, v) -> {
+                i.getAndIncrement();
+                WebStreamImpl webStream = new WebStreamImpl(k);
+                WindowNodeImpl windowNode = new WindowNodeImpl(RDFUtils.createIRI(k + "/w" + i), v.range, r2S.period, 0);
+                map.putIfAbsent(windowNode, webStream);
+            });
+        });
+        return map;
     }
 
     @Override

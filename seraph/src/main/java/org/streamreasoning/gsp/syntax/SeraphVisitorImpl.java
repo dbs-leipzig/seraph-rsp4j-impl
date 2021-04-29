@@ -16,7 +16,7 @@ public class SeraphVisitorImpl extends SeraphBaseVisitor<ContinuousQuery> {
 
     @Override
     public ContinuousQuery visitOS_S2R(SeraphParser.OS_S2RContext ctx) {
-        String input = ctx.input.getText();
+        String input = ctx.input.getText().replace("<", "").replace(">", "");
         String starting = ctx.starting.getText();
         Duration range = Duration.parse(ctx.range.getText());
 
@@ -36,11 +36,10 @@ public class SeraphVisitorImpl extends SeraphBaseVisitor<ContinuousQuery> {
         } else
             periodE = Integer.parseInt(ctx.period.oS_EventRange().oC_IntegerLiteral().getText());
 
-        String op = ctx.op.getText();
+        String op = ctx.op.getText().replace("<", "").replace(">", "");
         String output = ctx.output.getText();
 
         outputs.put(output, new R2S(op, periodD, periodE));
-
 
         return super.visitOS_R2S(ctx);
     }
