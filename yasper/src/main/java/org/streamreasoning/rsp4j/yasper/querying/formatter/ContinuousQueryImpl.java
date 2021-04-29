@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class ContinuousQueryImpl extends AbstractContinuousQuery {
@@ -54,6 +55,11 @@ public class ContinuousQueryImpl extends AbstractContinuousQuery {
     }
 
     @Override
+    public List<String> getInputStreams() {
+        return windowMap.values().stream().map(s -> s.uri()).collect(Collectors.toList());
+    }
+
+    @Override
     public List<String> getNamedGraphURIs() {
         return namedGraphURIs;
     }
@@ -64,7 +70,7 @@ public class ContinuousQueryImpl extends AbstractContinuousQuery {
     }
 
     @Override
-    public String getSPARQL() {
+    public String getR2R() {
         return "";
     }
 

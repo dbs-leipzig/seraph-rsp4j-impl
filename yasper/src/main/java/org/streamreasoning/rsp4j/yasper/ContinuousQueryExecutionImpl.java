@@ -10,6 +10,7 @@ import org.streamreasoning.rsp4j.api.stream.data.WebDataStream;
 import lombok.extern.log4j.Log4j;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 import java.util.stream.Stream;
@@ -25,22 +26,29 @@ public class ContinuousQueryExecutionImpl<I, E1, E2> extends ContinuousQueryExec
     private final RelationToRelationOperator<E2> r2r;
     private final SDS<E1> sds;
     private final ContinuousQuery query;
+    private final List<WebDataStream<I>> instreams;
     private final WebDataStream<E2> outstream;
     private List<StreamToRelationOp<I, E1>> s2rs;
 
-    public ContinuousQueryExecutionImpl(SDS sds, ContinuousQuery query, WebDataStream<E2> outstream, RelationToRelationOperator<E2> r2r, RelationToStreamOperator<E2> r2s, StreamToRelationOp<I, E1>... s2rs) {
+    public ContinuousQueryExecutionImpl(SDS sds, ContinuousQuery query, List<WebDataStream<I>> instreams, WebDataStream<E2> outstream, RelationToRelationOperator<E2> r2r, RelationToStreamOperator<E2> r2s, StreamToRelationOp<I, E1>... s2rs) {
         super(sds, query);
+        this.instreams = instreams;
+        this.outstream = outstream;
         this.s2rs = Arrays.asList(s2rs);
         this.query = query;
         this.sds = sds;
         this.r2r = r2r;
         this.r2s = r2s;
-        this.outstream = outstream;
     }
 
     @Override
     public WebDataStream<E2> outstream() {
         return outstream;
+    }
+
+    @Override
+    public WebDataStream<I>[] instream() {
+        return instreams.toArray(new WebDataStream[instreams.size()]);
     }
 
     @Override

@@ -42,6 +42,11 @@ public class CQ extends AbstractContinuousQuery {
     }
 
     @Override
+    public List<String> getInputStreams() {
+        return null;
+    }
+
+    @Override
     public List<String> getNamedGraphURIs() {
         return null;
     }
@@ -52,7 +57,7 @@ public class CQ extends AbstractContinuousQuery {
     }
 
     @Override
-    public String getSPARQL() {
+    public String getR2R() {
         return null;
     }
 

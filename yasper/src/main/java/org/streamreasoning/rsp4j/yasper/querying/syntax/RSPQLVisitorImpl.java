@@ -12,8 +12,8 @@ import org.apache.commons.lang.NotImplementedException;
 import java.time.Duration;
 
 /**
- * This parser class is based on the RSP-QL syntax described using ANTRL4. The parse tree visitor maps the static
- * syntax parts of the syntax to an extended Jena query. The visitor is based on the SPARQLJenaVisitor.
+ * This parser class is based on the RSP-QL org.streamreasoning.gsp.syntax described using ANTRL4. The parse tree visitor maps the static
+ * org.streamreasoning.gsp.syntax parts of the org.streamreasoning.gsp.syntax to an extended Jena query. The visitor is based on the SPARQLJenaVisitor.
  */
 
 public class RSPQLVisitorImpl extends RSPQLBaseVisitor {
@@ -477,7 +477,7 @@ public class RSPQLVisitorImpl extends RSPQLBaseVisitor {
     }
 
     /**
-     * Visit inline data one var.
+     * Visit inline org.streamreasoning.gsp.syntax.data one var.
      *
      * @param ctx
      * @return
@@ -487,7 +487,7 @@ public class RSPQLVisitorImpl extends RSPQLBaseVisitor {
     }
 
     /**
-     * Visit inline data full
+     * Visit inline org.streamreasoning.gsp.syntax.data full
      *
      * @param ctx
      * @return

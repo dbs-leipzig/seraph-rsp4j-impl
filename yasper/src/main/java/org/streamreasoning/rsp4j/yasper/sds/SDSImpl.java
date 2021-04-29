@@ -47,6 +47,8 @@ final public class SDSImpl implements Dataset, SDS<Graph> {
 
     public SDSImpl() {
         this.def = RDFUtils.createIRI("def");
+
+
     }
 
 

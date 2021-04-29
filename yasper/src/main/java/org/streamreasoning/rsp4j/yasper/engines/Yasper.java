@@ -28,6 +28,7 @@ import org.apache.commons.rdf.api.IRI;
 import org.apache.commons.rdf.api.Triple;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +75,7 @@ public class Yasper implements QueryRegistrationFeature<ContinuousQuery>, Stream
 
         RDFTripleStream out = new RDFTripleStream(q.getID());
 
-        ContinuousQueryExecution<Graph, Graph, Triple> cqe = new ContinuousQueryExecutionImpl<Graph, Graph, Triple>(sds, q, out, new R2RImpl(sds, q), new Rstream());
+        ContinuousQueryExecution<Graph, Graph, Triple> cqe = new ContinuousQueryExecutionImpl<Graph, Graph, Triple>(sds, q, null, out, new R2RImpl(sds, q), new Rstream());
 
         q.getWindowMap().forEach((WindowNode wo, WebStream s) -> {
             try {
