@@ -1,0 +1,12 @@
+{
+     "type": "record",
+     "namespace": "org.streamreasoning.gsp.data",
+     "name": "SocialNetworkEvent",
+     "version": "1",
+     "fields": [
+       { "name": "initiated", "type": "string", "doc": "Person who initiated the friend request" },
+       { "name": "accepted", "type": "string", "doc": "Person who accepted the friend request" },
+       { "name": "friends", "type": "boolean", "doc": "Are they friends or not" },
+       { "name": "date", "type": "string", "doc": "Timestamp of the moment the friend request was accepted" }
+     ]
+}

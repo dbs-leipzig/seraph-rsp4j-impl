@@ -1,0 +1,10 @@
+REGISTER <http://watch_for_suspects> {
+FROM STREAM  <kafka://scotland> STARTING FROM LATEST
+WITH WINDOW RANGE PT1M
+MATCH (c:E) -[p:PROP]-> (l1:Location) //Event is a reserved word
+WITH new, point(l1) AS crime_scene
+MATCH (person:Suspect) -[:PARTY_TO]->(crime:E),  (person:Suspect) -[:NEAR_TO]-> (last_seen:Location)
+WITH person, last_seen, distance(point(last_seen), crime_scene) AS distance
+WHERE distance < 3000  AND new.type=old.type
+RETURN person, last_seen, c.description AS crime_description
+EMIT SNAPSHOT EVERY PT5M INTO <kafka://suspects> }

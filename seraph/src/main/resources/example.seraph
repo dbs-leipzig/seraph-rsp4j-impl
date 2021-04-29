@@ -1,0 +1,6 @@
+REGISTER <http://example> {
+FROM STREAM  <http://stream1> STARTING FROM LATEST
+WITH WINDOW RANGE PT1M
+MATCH (n:Person)-[p]->(n1:Person)
+RETURN *
+EMIT SNAPSHOT EVERY PT5M INTO <http://stream2> }
