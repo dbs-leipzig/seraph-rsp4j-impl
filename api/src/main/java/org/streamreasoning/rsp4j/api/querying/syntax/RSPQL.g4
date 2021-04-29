@@ -1,5 +1,5 @@
 // Generate grammar files using the command:
-// $ antlr4 -visitor RSPQL.g4 -package it.polimi.yasper.core.querying.syntax
+// $ antlr4 -visitor RSPQL.g4 -package it.polimi.yasper.core.querying.org.streamreasoning.gsp.syntax
 grammar RSPQL;
 
 

@@ -60,11 +60,13 @@ public interface ContinuousQuery {
 
     List<String> getNamedwindowsURIs();
 
+    List<String> getInputStreams();
+
     List<String> getNamedGraphURIs();
 
     List<String> getResultVars();
 
-    String getSPARQL();
+    String getR2R();
 
     Time getTime();
 }

@@ -17,6 +17,8 @@ public interface ContinuousQueryExecution<I, E1, E2> {
 
     WebDataStream<E2> outstream();
 
+    WebDataStream<I>[] instream();
+
     ContinuousQuery query();
 
     SDS<E1> sds();

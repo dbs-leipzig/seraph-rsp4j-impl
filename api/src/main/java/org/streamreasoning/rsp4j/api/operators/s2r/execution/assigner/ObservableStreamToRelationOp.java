@@ -8,12 +8,10 @@ import org.streamreasoning.rsp4j.api.secret.tick.Ticker;
 import org.streamreasoning.rsp4j.api.secret.tick.secret.TickerFactory;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.instance.Window;
-import lombok.extern.log4j.Log4j;
 import org.apache.commons.rdf.api.IRI;
 
 import java.util.Observable;
 
-@Log4j
 public abstract class ObservableStreamToRelationOp<E, O> extends Observable implements StreamToRelationOp<E, O> {
 
     protected Tick tick;
@@ -48,7 +46,6 @@ public abstract class ObservableStreamToRelationOp<E, O> extends Observable impl
     }
 
     protected Content<E,O> setVisible(long t_e, Window w, Content<E,O> c) {
-        log.debug("Report [" + w.getO() + "," + w.getC() + ") with Content " + c + "");
         setChanged();
         notifyObservers(t_e);
         return c;
