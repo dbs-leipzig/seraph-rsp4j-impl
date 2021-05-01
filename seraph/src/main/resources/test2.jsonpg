@@ -1,0 +1,10 @@
+{
+  "nodes":[
+    {"id":101, "labels":["Person"], "properties":{"name":["Alice"], "country":["United States"]}}
+  , {"id":102, "labels":["Person", "Student"], "properties":{"name":["Bob"], "country":["Japan"]}}
+  ],
+  "edges":[
+    {"from":101, "to":102, "undirected":true, "labels":["Same_school", "Same_class"], "properties":{"since":[2012]}}
+  , {"from":101, "to":102, "labels":["Likes"], "properties":{"since":[2015]}}
+  ]
+}

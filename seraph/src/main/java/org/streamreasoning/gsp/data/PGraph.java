@@ -1,10 +1,34 @@
 package org.streamreasoning.gsp.data;
 
-import java.io.FileNotFoundException;
-import java.util.List;
-
 public interface PGraph {
-    List<String> nodes() throws FileNotFoundException;
-    List<String[]> edges() throws FileNotFoundException;
-    long timestamp();
+
+
+    Node[] nodes();
+
+    Edge[] edges();
+
+    default long timestamp() {
+        return System.currentTimeMillis();
+    }
+
+
+    interface Node {
+
+        long id();
+
+        String[] labels();
+
+        String[] properties();
+
+        Object property(String p);
+
+    }
+
+    interface Edge extends Node {
+
+        long to();
+
+        long from();
+
+    }
 }

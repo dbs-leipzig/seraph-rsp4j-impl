@@ -133,7 +133,7 @@ public class SeraphStreamToRelationOp extends ObservableStreamToRelationOp<PGrap
 
     @Override
     public TimeVaryingPGraph get() {
-        return new TimeVaryingPGraph(this, iri, new PGraphImpl());
+        return new TimeVaryingPGraph(this, iri, PGraphImpl.createEmpty());
     }
 
 

@@ -2,58 +2,129 @@ package org.streamreasoning.gsp.data;
 
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.lang.reflect.Type;
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 
 public class PGraphImpl implements PGraph {
-    Collection<Event> events;
-    public PGraphImpl() {
-        URL url = getClass().getResource("/SocialNetwork");
-        Gson gson = new Gson();
-        Type collectionType = new TypeToken<Collection<Event>>() {
-        }.getType();
-        try {
-            this.events = gson.fromJson(new FileReader(url.getPath()), collectionType);
-        } catch (FileNotFoundException e) {
-            this.events = Collections.EMPTY_LIST;
-            e.printStackTrace();
-        }
+
+    private NodeImpl[] nodes;
+    private EdgeImpl[] edges;
+
+    protected long timestamp;
+
+    private static Gson gson = new Gson();
+
+    public PGraphImpl(NodeImpl[] nodes, EdgeImpl[] edges) {
+        this.nodes = nodes;
+        this.edges = edges;
+        this.timestamp = System.currentTimeMillis();
     }
 
-    // {"initiated": "Cory", "accepted": "Levi", "friends": true, "date": "2019-08-08T16:13:11.774754"}
+    public static PGraph createEmpty() {
+        return new PGraphImpl(new NodeImpl[]{}, new EdgeImpl[]{});
+    }
 
-    @Override
-    public List<String> nodes() throws FileNotFoundException {
-        Set<String> s = new HashSet<>();
-        List<String> personNames = new ArrayList<>();
-        events.forEach(event -> {
-            s.add(event.getAccepted());
-            s.add(event.getInitiated());
-        });
-        personNames.addAll(s);
-        return personNames; // ["Cory","Zidane","Kaka"...]
+    public static PGraph fromJson(FileReader fileReader) {
+        PGraphImpl pGraph = gson.fromJson(fileReader, PGraphImpl.class);
+        pGraph.timestamp = System.currentTimeMillis();
+        return pGraph;
     }
 
     @Override
-    public List<String[]> edges() throws FileNotFoundException {
-        //String[] strings = {"Cory", "Levi", "friends"};
-        List<String[]> strings = new ArrayList<String[]>();
+    public PGraph.Node[] nodes() {
+        return nodes;
+    }
 
-        events.forEach(event -> {
-            strings.add(new String[]{event.getInitiated(), event.getAccepted(), "friends", event.getDate()});
-        });
-
-        //List<String[]> strings1 = Arrays.asList(new String[][]{strings});
-        return strings; // [{"Cory","Levi","friends","2019-05-02"}, ...]
+    @Override
+    public PGraph.Edge[] edges() {
+        return edges;
     }
 
     @Override
     public long timestamp() {
-        return 0;
+        return timestamp;
+    }
+
+    private class NodeImpl implements PGraph.Node {
+        long id;
+        String[] labels;
+        Map<String, Object> properties;
+
+        public NodeImpl(long id, String[] labels, Map<String, Object> properties) {
+            this.id = id;
+            this.labels = labels;
+            this.properties = properties;
+        }
+
+        public NodeImpl() {
+        }
+
+        @Override
+        public String toString() {
+            return "(" + id +
+                    ":" + Arrays.toString(labels) +
+                    "{" + properties +
+                    "})";
+        }
+
+        @Override
+        public long id() {
+            return id;
+        }
+
+        @Override
+        public String[] labels() {
+            return labels;
+        }
+
+        @Override
+        public String[] properties() {
+            return properties.keySet().toArray(new String[properties.size()]);
+        }
+
+        @Override
+        public Object property(String p) {
+            Object o = properties.get(p);
+            return o instanceof ArrayList ? ((ArrayList<?>) o).get(0) : o;
+        }
+    }
+
+    private class EdgeImpl extends NodeImpl implements PGraph.Edge {
+        long from, to;
+
+        public EdgeImpl(long id, String[] labels, Map<String, Object> properties, long from, long to) {
+            super(id, labels, properties);
+            this.from = from;
+            this.to = to;
+        }
+
+        public EdgeImpl() {
+        }
+
+
+        @Override
+        public String toString() {
+            return "(" + from +
+                    "," + to +
+                    ")";
+        }
+
+        @Override
+        public long to() {
+            return to;
+        }
+
+        @Override
+        public long from() {
+            return from;
+        }
+
+        @Override
+        public long id() {
+            return from;
+        }
     }
 }

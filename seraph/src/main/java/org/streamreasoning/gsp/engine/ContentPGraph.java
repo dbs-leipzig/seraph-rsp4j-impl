@@ -1,11 +1,11 @@
 package org.streamreasoning.gsp.engine;
 
-import org.streamreasoning.gsp.data.PGraph;
 import org.neo4j.graphdb.*;
+import org.streamreasoning.gsp.data.PGraph;
+import org.streamreasoning.gsp.data.PGraphImpl;
 import org.streamreasoning.rsp4j.api.secret.content.Content;
 import org.streamreasoning.rsp4j.api.secret.time.TimeFactory;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 
 public class ContentPGraph implements Content<PGraph, PGraph> {
@@ -57,84 +57,38 @@ public class ContentPGraph implements Content<PGraph, PGraph> {
     @Override
     public PGraph coalesce() {
         Transaction txd = db.beginTx();
-
-        txd.execute("MATCH (n) DETACH DELETE n");
+        txd.getAllNodes().forEach(node -> {
+            node.getRelationships().forEach(Relationship::delete);
+            node.delete();
+        });
         txd.commit();
         //TODO First run query (delete n when n.prov == stream(name)) | added the execute delete query
         //TODO create a query that adds all the information into the elements
         Transaction tx = db.beginTx();
-
-        /*
-            MERGE (p1:Person { name: event.initiated })
-            MERGE (p2:Person { name: event.accepted })
-            CREATE (p1)-[:FRIENDS { when: event.date }]->(p2)
-        */
-        elements.forEach(pGraph -> {
-            try {
-
-                //TODO add the name of the window operator.
-                //one can see this as a
-                pGraph.nodes().forEach(name -> {
-                    Node n = tx.findNode(Label.label(p), "name", name);
-                    if (n == null) {
-                        n = tx.createNode(Label.label(p));
-                        n.setProperty("name", name);
-//                        node1.setProperty("__op", "win1");
-                    }
+        for (PGraph g : elements) {
+            Map<Long, Node> ids = new HashMap<>();
+            Arrays.stream(g.nodes()).forEach(n1 -> {
+                Node n = tx.createNode();
+                Arrays.stream(n1.labels()).forEach(s -> n.addLabel(Label.label(s)));
+                Arrays.stream(n1.properties()).forEach(p -> n.setProperty(p, n1.property(p)));
+                ids.put(n1.id(), n);
+            });
+            //TODO Assumption on EDGES, they only refer to nodes in the current graph because we better use internal ids
+            Arrays.stream(g.edges()).forEach(e -> {
+                Node from = ids.computeIfAbsent(e.from(), l -> tx.createNode());
+                Node to = ids.computeIfAbsent(e.to(), l -> tx.createNode());
+                Arrays.stream(e.labels()).forEach(l -> {
+                    Relationship r = from.createRelationshipTo(to, RelationshipType.withName(l));
+                    Arrays.stream(e.properties()).forEach(p -> r.setProperty(p, e.property(p)));
                 });
-                pGraph.edges().forEach(edge -> {
-                    Node firstNode = tx.findNode(Label.label(p), "name", edge[0]);
-                    Node secondNode = tx.findNode(Label.label(p), "name", edge[1]);
-                    firstNode.createRelationshipTo(secondNode, friends);
-                });
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
-        //        elements.stream().flatMap(ig->GraphUtil.findAll(ig).toList().stream()).forEach(this.graph::add);
-
+            });
+        }
         tx.commit();
         tx.close();
 
         //TODO ideally, we should return a org.streamreasoning.gsp.syntax.data.PGraph built out the new graphdb.
-        return new PGraph() {
+        return new PGraphDB(db);
 
-
-            @Override
-            public List<String> nodes() throws FileNotFoundException {
-                Transaction tx = db.beginTx();
-                List<String> emptyList = Collections.EMPTY_LIST;
-                Result execute = tx.execute("MATCH (n) RETURN n");
-                while (execute.hasNext()) {
-                    emptyList.add(execute.next().toString());
-                }
-                tx.commit();
-                tx.close();
-                return emptyList;
-            }
-
-            @Override
-            public List<String[]> edges() throws FileNotFoundException {
-                Transaction tx = db.beginTx();
-                List<String[]> emptyList = Collections.EMPTY_LIST;
-                Result execute = tx.execute("MATCH (n)-[p]->(m) RETURN n,m,p");
-                while (execute.hasNext()) {
-                    Map<String, Object> next = execute.next();
-                    emptyList.add(new String[]{
-                            next.get("n").toString(),
-                            next.get("m").toString(),
-                            next.get("p").toString()});
-                }
-                tx.commit();
-                tx.close();
-                return emptyList;
-            }
-
-            @Override
-            public long timestamp() {
-                return System.currentTimeMillis();
-            }
-        };
     }
 
     @Override

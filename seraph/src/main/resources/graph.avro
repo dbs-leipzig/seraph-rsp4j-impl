@@ -1,0 +1,56 @@
+{
+        "namespace": "streams",
+        "name": "impressions",
+        "type": "record",
+        "fields": [
+                {"name": "timestamp", "type": {
+                    "type": "long",
+                    "format_as_time" : "unix_long",
+                    "arg.properties": {
+                       "iteration": { "start": 1, "step": 10}
+                    }
+                }},
+
+                {
+                    "name": "nodes",
+                    "type": {
+                        "type": "array",
+                        "items": "string",
+                        "arg.properties":
+                            {
+                             "options": [
+                                [   "Game",
+                                    "News"
+                                ],
+                                [  "Game",
+                                   "Sport"
+                                ],
+                                [ "News",
+                                  "Movies"
+                                ],
+                                [ "News",
+                                  "Travel"
+                                ]
+                             ]
+                           }
+                                      }
+                },
+                {"name": "nodes", "type": {
+                    "type": "string",
+                    "arg.properties": {
+                        "regex": "impression_[1-9][0-9][0-9]"
+                    }
+                }},
+                {"name": "userid", "type": {
+                    "type": "string",
+                    "arg.properties": {
+                        "regex": "user_[1-9][0-9]?"
+                    }
+                }},
+                {"name": "adid", "type": {
+                    "type": "string",
+                    "arg.properties": {
+                        "regex": "ad_[1-9][0-9]?"
+                    }
+                }}
+        ]

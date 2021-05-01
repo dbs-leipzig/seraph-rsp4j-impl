@@ -1,11 +1,15 @@
 package org.streamreasoning.gsp.data;
 
+import com.google.gson.Gson;
 import org.streamreasoning.rsp4j.api.stream.data.WebDataStream;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Source implements Runnable{
+public class Source implements Runnable {
 
     public Source(WebDataStream<PGraph> stream) {
         this.stream = stream;
@@ -21,12 +25,14 @@ public class Source implements Runnable{
 
             while (true) {
 //            ac.consume();
-
-//                List<SocialNetworkEvent> e = new ArrayList<>();
-
-                stream.put(new PGraphImpl(), System.currentTimeMillis());
-//            stream.put(new PGraphImplAvro(e, System.currentTimeMillis());
-
+                try {
+                    URL url = Source.class.getClassLoader().getResource("test2.jsonpg");
+                    FileReader fileReader = new FileReader(url.getPath());
+                    PGraph pGraph = PGraphImpl.fromJson(fileReader);
+                    stream.put(pGraph, pGraph.timestamp());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 Thread.sleep(4000);
             }
         } catch (
