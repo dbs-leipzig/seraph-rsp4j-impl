@@ -26,7 +26,7 @@ public class Source implements Runnable {
             while (true) {
 //            ac.consume();
                 try {
-                    URL url = Source.class.getClassLoader().getResource("test2.jsonpg");
+                    URL url = Source.class.getClassLoader().getResource("test.json");
                     FileReader fileReader = new FileReader(url.getPath());
                     PGraph pGraph = PGraphImpl.fromJson(fileReader);
                     stream.put(pGraph, pGraph.timestamp());

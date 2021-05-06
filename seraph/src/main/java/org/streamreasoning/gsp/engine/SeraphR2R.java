@@ -40,7 +40,7 @@ public class SeraphR2R implements RelationToRelationOperator<Map<String, Object>
         String id = baseURI + "result;" + ts;
         this.tx = db.beginTx();
 
-        Result result = tx.execute(query.getR2R());
+        Result result = tx.execute(query.getR2R().toString());
 //        |--name-|--age--|-email--|
 //        |--Fred--|--22--|--null--|
 //        |--Riccardo--|--29--|--null--|

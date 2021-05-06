@@ -30,7 +30,7 @@ final public class SeraphSDSImpl implements SDS<PGraph> {
 
     private static final int TO_STRING_MAX = 10;
 
-    private     GraphDatabaseService db;
+    private GraphDatabaseService db;
 
     private List<TimeVarying<PGraph>> graphs = new ArrayList<>();
 

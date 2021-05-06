@@ -85,7 +85,6 @@ public class SeraphStreamToRelationOp extends ObservableStreamToRelationOp<PGrap
                     }
                 });
 
-
         active_windows.keySet().stream()
                 .filter(w -> report.report(w, null, t_e, System.currentTimeMillis()))
                 .max(Comparator.comparingLong(Window::getC))
@@ -96,6 +95,7 @@ public class SeraphStreamToRelationOp extends ObservableStreamToRelationOp<PGrap
             if (toi < w.getC())
                 toi = w.getC() + b;
         });
+
         to_evict.clear();
     }
 
@@ -104,7 +104,6 @@ public class SeraphStreamToRelationOp extends ObservableStreamToRelationOp<PGrap
         long o_i = c_sup - a;
 
         do {
-
             active_windows
                     .computeIfAbsent(new WindowImpl(o_i, o_i + a), x -> new ContentPGraph(db));
             o_i += b;
@@ -118,7 +117,6 @@ public class SeraphStreamToRelationOp extends ObservableStreamToRelationOp<PGrap
         to_evict.add(w);
     }
 
-
     public Content<PGraph, PGraph> compute(long t_e, Window w) {
         Content<PGraph, PGraph> content = active_windows.containsKey(w) ? active_windows.get(w) : new EmptyPGraphContent();
         time.setAppTime(t_e);
@@ -130,11 +128,9 @@ public class SeraphStreamToRelationOp extends ObservableStreamToRelationOp<PGrap
         this.addObserver((Observer) context);
     }
 
-
     @Override
     public TimeVaryingPGraph get() {
         return new TimeVaryingPGraph(this, iri, PGraphImpl.createEmpty());
     }
-
 
 }

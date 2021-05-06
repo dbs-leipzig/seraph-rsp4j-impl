@@ -1,0 +1,165 @@
+{
+  "timestamp" : 1,
+  "nodes" : [ {
+    "id" : -2039046432,
+    "labels" : [ "Person", "Professor" ],
+    "properties" : {
+      "name" : {
+        "string" : "Alice"
+      },
+      "age" : {
+        "int" : 20
+      }
+    }
+  }, {
+    "id" : 1003620187,
+    "labels" : [ "Person", "Professor" ],
+    "properties" : {
+      "name" : {
+        "string" : "Alice"
+      },
+      "age" : {
+        "int" : 20
+      }
+    }
+  }, {
+    "id" : -779485945,
+    "labels" : [ "Person", "Student" ],
+    "properties" : {
+      "name" : {
+        "string" : "Bob"
+      },
+      "age" : {
+        "int" : 42
+      }
+    }
+  }, {
+    "id" : 1076658603,
+    "labels" : [ "Person", "Professor" ],
+    "properties" : {
+      "name" : {
+        "string" : "Alice"
+      },
+      "age" : {
+        "int" : 20
+      }
+    }
+  }, {
+    "id" : 512456011,
+    "labels" : [ "Person", "Professor" ],
+    "properties" : {
+      "name" : {
+        "string" : "Alice"
+      },
+      "age" : {
+        "int" : 20
+      }
+    }
+  }, {
+    "id" : 2091841008,
+    "labels" : [ "Person", "Student" ],
+    "properties" : {
+      "name" : {
+        "string" : "Bob"
+      },
+      "age" : {
+        "int" : 42
+      }
+    }
+  }, {
+    "id" : -1823588480,
+    "labels" : [ "Person", "Student" ],
+    "properties" : {
+      "name" : {
+        "string" : "Bob"
+      },
+      "age" : {
+        "int" : 42
+      }
+    }
+  }, {
+    "id" : -139752865,
+    "labels" : [ "Person", "Student" ],
+    "properties" : {
+      "name" : {
+        "string" : "Bob"
+      },
+      "age" : {
+        "int" : 42
+      }
+    }
+  }, {
+    "id" : 827618060,
+    "labels" : [ "Person", "Professor" ],
+    "properties" : {
+      "name" : {
+        "string" : "Alice"
+      },
+      "age" : {
+        "int" : 20
+      }
+    }
+  } ],
+  "edges" : [ {
+    "from" : 152394927,
+    "to" : -584049262,
+    "labels" : [ "Same_school" ],
+    "properties" : {
+      "one" : 1,
+      "two" : 2
+    }
+  }, {
+    "from" : -358363584,
+    "to" : -1197676172,
+    "labels" : [ "Likes" ],
+    "properties" : {
+      "zero" : 0
+    }
+  }, {
+    "from" : -1946322748,
+    "to" : -233185481,
+    "labels" : [ "Likes" ],
+    "properties" : {
+      "zero" : 0
+    }
+  }, {
+    "from" : 784724312,
+    "to" : 124396604,
+    "labels" : [ "Same_school" ],
+    "properties" : {
+      "zero" : 0
+    }
+  }, {
+    "from" : 607449719,
+    "to" : -494884952,
+    "labels" : [ "Same_school" ],
+    "properties" : {
+      "one" : 1,
+      "two" : 2
+    }
+  }, {
+    "from" : -841945733,
+    "to" : 1700573087,
+    "labels" : [ "Same_school" ],
+    "properties" : {
+      "zero" : 0
+    }
+  }, {
+    "from" : 1149415524,
+    "to" : -49969742,
+    "labels" : [ "Likes" ],
+    "properties" : {
+      "six" : 6,
+      "seven" : 7,
+      "eight" : 8,
+      "nine" : 9
+    }
+  }, {
+    "from" : 1427579863,
+    "to" : 1496315541,
+    "labels" : [ "Likes" ],
+    "properties" : {
+      "zero" : 0
+    }
+  } ]
+}

@@ -1,0 +1,210 @@
+{
+  "timestamp" : 1,
+  "nodes" : [ {
+    "id" : 231,
+    "labels" : [ "Person", "Student" ],
+    "properties" : {
+      "name" : {
+        "string" : "Bob"
+      },
+      "friends" : {
+        "int" : 33
+      }
+    }
+  }, {
+    "id" : 774,
+    "labels" : [ "Person", "Professor" ],
+    "properties" : {
+      "bff" : {
+        "string" : "Bob"
+      },
+      "friends" : {
+        "int" : 20
+      }
+    }
+  }, {
+    "id" : 64,
+    "labels" : [ "Person", "Student" ],
+    "properties" : {
+      "bff" : {
+        "string" : "Bob"
+      },
+      "friends" : {
+        "int" : 42
+      }
+    }
+  }, {
+    "id" : 507,
+    "labels" : [ "Person", "Professor" ],
+    "properties" : {
+      "bff" : {
+        "string" : "Alice"
+      },
+      "friends" : {
+        "int" : 42
+      }
+    }
+  }, {
+    "id" : 628,
+    "labels" : [ "Person", "Student" ],
+    "properties" : {
+      "name" : {
+        "string" : "Alice"
+      },
+      "friends" : {
+        "int" : 42
+      }
+    }
+  }, {
+    "id" : 387,
+    "labels" : [ "Person", "Student" ],
+    "properties" : {
+      "bff" : {
+        "string" : "Alice"
+      },
+      "friends" : {
+        "int" : 42
+      }
+    }
+  }, {
+    "id" : 267,
+    "labels" : [ "Person", "Student" ],
+    "properties" : {
+      "name" : {
+        "string" : "Alice"
+      },
+      "friends" : {
+        "int" : 33
+      }
+    }
+  }, {
+    "id" : 487,
+    "labels" : [ "Person", "Student" ],
+    "properties" : {
+      "bff" : {
+        "string" : "Carl"
+      },
+      "friends" : {
+        "int" : 33
+      }
+    }
+  }, {
+    "id" : 522,
+    "labels" : [ "Person", "Student" ],
+    "properties" : {
+      "name" : {
+        "string" : "Bob"
+      },
+      "friends" : {
+        "int" : 42
+      }
+    }
+  } ],
+  "edges" : [ {
+    "from" : 387,
+    "to" : 387,
+    "labels" : [ "Likes" ],
+    "properties" : {
+      "zero" : 0
+    }
+  }, {
+    "from" : 507,
+    "to" : 628,
+    "labels" : [ "Likes" ],
+    "properties" : {
+      "one" : 1,
+      "two" : 2
+    }
+  }, {
+    "from" : 507,
+    "to" : 231,
+    "labels" : [ "Likes" ],
+    "properties" : {
+      "zero" : 0
+    }
+  }, {
+    "from" : 64,
+    "to" : 774,
+    "labels" : [ "Same_school" ],
+    "properties" : {
+      "zero" : 0
+    }
+  }, {
+    "from" : 487,
+    "to" : 231,
+    "labels" : [ "Same_school" ],
+    "properties" : {
+      "three" : 3,
+      "four" : 4,
+      "five" : 5
+    }
+  }, {
+    "from" : 522,
+    "to" : 64,
+    "labels" : [ "Likes" ],
+    "properties" : {
+      "six" : 6,
+      "seven" : 7,
+      "eight" : 8,
+      "nine" : 9
+    }
+  }, {
+    "from" : 522,
+    "to" : 628,
+    "labels" : [ "Same_school" ],
+    "properties" : {
+      "six" : 6,
+      "seven" : 7,
+      "eight" : 8,
+      "nine" : 9
+    }
+  }, {
+    "from" : 231,
+    "to" : 231,
+    "labels" : [ "Likes" ],
+    "properties" : {
+      "zero" : 0
+    }
+  }, {
+    "from" : 628,
+    "to" : 774,
+    "labels" : [ "Same_school" ],
+    "properties" : {
+      "zero" : 0
+    }
+  }, {
+    "from" : 487,
+    "to" : 628,
+    "labels" : [ "Likes" ],
+    "properties" : {
+      "zero" : 0
+    }
+  }, {
+    "from" : 507,
+    "to" : 387,
+    "labels" : [ "Same_school" ],
+    "properties" : {
+      "one" : 1,
+      "two" : 2
+    }
+  }, {
+    "from" : 64,
+    "to" : 64,
+    "labels" : [ "Same_school" ],
+    "properties" : {
+      "six" : 6,
+      "seven" : 7,
+      "eight" : 8,
+      "nine" : 9
+    }
+  }, {
+    "from" : 774,
+    "to" : 628,
+    "labels" : [ "Same_school" ],
+    "properties" : {
+      "three" : 3,
+      "four" : 4,
+      "five" : 5
+    }
+  } ]
+}

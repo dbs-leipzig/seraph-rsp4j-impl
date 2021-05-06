@@ -70,7 +70,10 @@ public class ContentPGraph implements Content<PGraph, PGraph> {
             Arrays.stream(g.nodes()).forEach(n1 -> {
                 Node n = tx.createNode();
                 Arrays.stream(n1.labels()).forEach(s -> n.addLabel(Label.label(s)));
-                Arrays.stream(n1.properties()).forEach(p -> n.setProperty(p, n1.property(p)));
+                Arrays.stream(n1.properties()).forEach(p -> {
+                    Object property = getProperty(n1, p);
+                    n.setProperty(p, property);
+                });
                 ids.put(n1.id(), n);
             });
             //TODO Assumption on EDGES, they only refer to nodes in the current graph because we better use internal ids
@@ -79,9 +82,13 @@ public class ContentPGraph implements Content<PGraph, PGraph> {
                 Node to = ids.computeIfAbsent(e.to(), l -> tx.createNode());
                 Arrays.stream(e.labels()).forEach(l -> {
                     Relationship r = from.createRelationshipTo(to, RelationshipType.withName(l));
-                    Arrays.stream(e.properties()).forEach(p -> r.setProperty(p, e.property(p)));
+                    Arrays.stream(e.properties()).forEach(p -> {
+                        Object property = getProperty(e, p);
+                        r.setProperty(p, property);
+                    });
                 });
             });
+            ids.clear();
         }
         tx.commit();
         tx.close();
@@ -89,6 +96,14 @@ public class ContentPGraph implements Content<PGraph, PGraph> {
         //TODO ideally, we should return a org.streamreasoning.gsp.syntax.data.PGraph built out the new graphdb.
         return new PGraphDB(db);
 
+    }
+
+    private Object getProperty(PGraph.Node n1, String p) {
+        Object property = n1.property(p);
+        if (property instanceof Map) {
+            return ((Map<?, ?>) property).entrySet().stream().findFirst().get().getValue();
+        }
+        return property;
     }
 
     @Override
