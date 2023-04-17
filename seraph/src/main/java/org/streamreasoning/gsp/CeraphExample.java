@@ -34,9 +34,11 @@ public class CeraphExample {
                 "EMIT SNAPSHOT EVERY PT5S " +
                 "INTO <http://stream2> }\n");
 
+        //register the seraph query
         ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>> cqe = sr.register(q);
 
         Arrays.stream(cqe.instream()).forEach(s -> {
+            //Create a thread that creates the property graph stream for each stream registered in the ContinuousQueryExecution
             new Thread(new Source(s)).start();
         });
 

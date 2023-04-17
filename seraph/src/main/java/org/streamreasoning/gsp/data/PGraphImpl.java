@@ -27,6 +27,7 @@ public class PGraphImpl implements PGraph {
         return new PGraphImpl(new NodeImpl[]{}, new EdgeImpl[]{});
     }
 
+    //Create a property graph from a file and add the current system time as a timestamp
     public static PGraph fromJson(FileReader fileReader) {
         PGraphImpl pGraph = gson.fromJson(fileReader, PGraphImpl.class);
         pGraph.timestamp = System.currentTimeMillis();

@@ -85,7 +85,7 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
             in.add(register);
         });
 
-
+        //empty output stream
         WebStream stream = q.getOutputStream();
 
         WebDataStream<Map<String, Object>> out = new WebDataStream<Map<String, Object>>() {

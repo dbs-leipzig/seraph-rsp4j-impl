@@ -26,6 +26,7 @@ public class Source implements Runnable {
             while (true) {
 //            ac.consume();
                 try {
+                    //Create a property graph using the test.json as a base
                     URL url = Source.class.getClassLoader().getResource("test.json");
                     FileReader fileReader = new FileReader(url.getPath());
                     PGraph pGraph = PGraphImpl.fromJson(fileReader);
