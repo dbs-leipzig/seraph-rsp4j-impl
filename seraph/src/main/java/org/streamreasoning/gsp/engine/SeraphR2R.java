@@ -30,10 +30,12 @@ public class SeraphR2R implements RelationToRelationOperator<Map<String, Object>
         this.query = query;
         this.sds = sds;
         this.baseURI = baseURI;
-        resultVars = query.getResultVars();
+        //TODO check if correct: changed getResultVars to
+        resultVars = query.getAggregations();
 
     }
 
+    //TODO change method override from eval(long) to eval(sds)
     @Override
     public Stream<SolutionMapping<Map<String,Object>>> eval(long ts) {
         //TODO fix up to stream
@@ -59,4 +61,6 @@ public class SeraphR2R implements RelationToRelationOperator<Map<String, Object>
 
         return res.stream().map(b -> new SolutionMappingImpl<>(id, b, this.resultVars, ts));
     }
+
+
 }

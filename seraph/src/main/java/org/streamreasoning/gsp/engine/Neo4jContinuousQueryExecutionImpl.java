@@ -1,28 +1,20 @@
 package org.streamreasoning.gsp.engine;
 
-
 import org.streamreasoning.gsp.data.PGraph;
-import org.streamreasoning.gsp.engine.windowing.SeraphStreamToRelationOp;
 import org.streamreasoning.rsp4j.api.operators.r2r.RelationToRelationOperator;
 import org.streamreasoning.rsp4j.api.operators.r2s.RelationToStreamOperator;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.StreamToRelationOp;
 import org.streamreasoning.rsp4j.api.querying.ContinuousQuery;
-import org.streamreasoning.rsp4j.api.querying.ContinuousQueryExecution;
 import org.streamreasoning.rsp4j.api.querying.result.SolutionMapping;
 import org.streamreasoning.rsp4j.api.sds.SDS;
+import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVarying;
 import org.streamreasoning.rsp4j.api.stream.data.DataStream;
-import org.streamreasoning.rsp4j.api.stream.data.WebDataStream;
 
-import javax.xml.crypto.Data;
 import java.util.*;
 import java.util.stream.Stream;
 
-/**
- * Created by riccardo on 03/07/2017.
- */
-//ToDO change constructor and calls of constructor -- before: PGraph, PGraph, Map<String, Object> ->
-public class Neo4jContinuousQueryExecution extends Observable implements Observer, ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>> {
-
+//TODO fix class
+public class Neo4jContinuousQueryExecutionImpl<I, W, R, O> extends Neo4jContinuousQueryExecutionObserver<I, W, R, O> {
     private final RelationToStreamOperator<Map<String, Object>> r2s;
     private final RelationToRelationOperator<Map<String, Object>> r2r;
     private final SDS sds;
@@ -33,7 +25,7 @@ public class Neo4jContinuousQueryExecution extends Observable implements Observe
     private List<StreamToRelationOp<PGraph, PGraph>> s2rs;
 
 
-    public Neo4jContinuousQueryExecution(DataStream<Map<String, Object>> out, List<DataStream<PGraph>> instreams, ContinuousQuery query, SDS sds, RelationToRelationOperator<Map<String, Object>> r2r, RelationToStreamOperator<Map<String, Object>> r2s, StreamToRelationOp<PGraph, PGraph>... s2rs) {
+    public Neo4jContinuousQueryExecutionImpl(DataStream<Map<String, Object>> out, List<DataStream<PGraph>> instreams, ContinuousQuery query, SDS sds, RelationToRelationOperator<Map<String, Object>> r2r, RelationToStreamOperator<Map<String, Object>> r2s, StreamToRelationOp<PGraph, PGraph>... s2rs) {
         this.query = query;
         this.q = query;
         this.sds = sds;
@@ -42,7 +34,7 @@ public class Neo4jContinuousQueryExecution extends Observable implements Observe
         this.r2s = r2s;
         this.out = out;
         this.instreams = instreams;
-    }
+}
 
 
 
@@ -118,6 +110,11 @@ public class Neo4jContinuousQueryExecution extends Observable implements Observe
     }
 
     @Override
+    public TimeVarying<Collection<R>> output() {
+        return null;
+    }
+
+    @Override
     public DataStream<PGraph>[] instream() {
         return  instreams.toArray(new DataStream[instreams.size()]);
     }
@@ -145,6 +142,11 @@ public class Neo4jContinuousQueryExecution extends Observable implements Observe
     @Override
     public RelationToStreamOperator<Map<String, Object>> r2s() {
         return r2s;
+    }
+
+    @Override
+    public void add(StreamToRelationOp<I, W> op) {
+
     }
 
     @Override

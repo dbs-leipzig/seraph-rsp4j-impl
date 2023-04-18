@@ -25,6 +25,7 @@ public class SeraphTimeWindowOperatorFactory implements StreamToRelationOperator
     private final GraphDatabaseService db;
     private ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>> context;
 
+    //TODO add contentfactory cf -> csparqltimewindowoperatorfactory
     public SeraphTimeWindowOperatorFactory(long a, long b, Time time, Tick tick, Report report, ReportGrain grain, ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>> context, GraphDatabaseService db) {
         this.a = a;
         this.b = b;

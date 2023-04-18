@@ -26,6 +26,7 @@
         <module>dsms</module>
         <module>reasoning</module>
         <module>mapping</module>
+        <module>seraph</module>
     </modules>
 
     <dependencyManagement>

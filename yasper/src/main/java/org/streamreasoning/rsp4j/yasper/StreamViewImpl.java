@@ -45,11 +45,6 @@ public class StreamViewImpl extends Observable implements ContinuousQueryExecuti
     }
 
     @Override
-    public WebDataStream<Triple>[] instream() {
-        return new WebDataStream[0];
-    }
-
-    @Override
     public ContinuousQuery query() {
         return null;
     }

@@ -32,16 +32,6 @@
             <version>1.7.25</version>
         </dependency>
         <dependency>
-            <groupId>it.polimi.sr.rsp</groupId>
-            <artifactId>api</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>it.polimi.sr.rsp</groupId>
-            <artifactId>yasper</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j</artifactId>
             <version>4.2.5</version>
@@ -83,34 +73,34 @@
                         <configuration>
                             <sourceDirectory>${project.basedir}/src/main/resources/avro</sourceDirectory>
                             <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
-<!--                            <stringType>String</stringType>-->
-<!--                            <createSetters>false</createSetters>-->
-<!--                            <enableDecimalLogicalType>true</enableDecimalLogicalType>-->
-<!--                            <fieldVisibility>private</fieldVisibility>-->
+                            <!--                            <stringType>String</stringType>-->
+                            <!--                            <createSetters>false</createSetters>-->
+                            <!--                            <enableDecimalLogicalType>true</enableDecimalLogicalType>-->
+                            <!--                            <fieldVisibility>private</fieldVisibility>-->
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
             <!--force discovery of generated classes-->
-<!--            <plugin>-->
-<!--                <groupId>org.codehaus.mojo</groupId>-->
-<!--                <artifactId>build-helper-maven-plugin</artifactId>-->
-<!--                <version>3.0.0</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>add-source</id>-->
-<!--                        <phase>generate-sources</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>add-source</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <sources>-->
-<!--                                <source>target/generated-sources/avro/ee/ut/dsg/seraph/kafka</source>-->
-<!--                            </sources>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.codehaus.mojo</groupId>-->
+            <!--                <artifactId>build-helper-maven-plugin</artifactId>-->
+            <!--                <version>3.0.0</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>add-source</id>-->
+            <!--                        <phase>generate-sources</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>add-source</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <sources>-->
+            <!--                                <source>target/generated-sources/avro/ee/ut/dsg/seraph/kafka</source>-->
+            <!--                            </sources>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>

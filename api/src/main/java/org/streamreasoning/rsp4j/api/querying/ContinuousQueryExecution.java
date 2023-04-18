@@ -20,8 +20,6 @@ public interface ContinuousQueryExecution<I, W, R, O> {
 
     TimeVarying<Collection<R>> output();
 
-    WebDataStream<I>[] instream();
-
     ContinuousQuery query();
 
     SDS<W> sds();

@@ -1,8 +1,7 @@
 package org.streamreasoning.gsp.data;
 
 import com.google.gson.Gson;
-import org.streamreasoning.rsp4j.api.stream.data.WebDataStream;
-
+import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.net.URL;
@@ -12,11 +11,11 @@ import java.util.List;
 //TODO create method to set a source from either the query or the example class
 public class Source implements Runnable {
 
-    public Source(WebDataStream<PGraph> stream) {
+    public Source(DataStream<PGraph> stream) {
         this.stream = stream;
     }
 
-    private final WebDataStream<PGraph> stream;
+    private final DataStream<PGraph> stream;
 
     @Override
     public void run() {

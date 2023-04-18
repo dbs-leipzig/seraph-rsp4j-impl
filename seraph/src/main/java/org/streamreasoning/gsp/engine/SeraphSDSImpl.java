@@ -25,6 +25,7 @@ import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVarying;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 final public class SeraphSDSImpl implements SDS<PGraph> {
 
@@ -58,5 +59,17 @@ final public class SeraphSDSImpl implements SDS<PGraph> {
     @Override
     public SDS<PGraph> materialize(long ts) {
         return SDS.super.materialize(ts);
+    }
+
+    @Override
+    public void materialized() {
+
+    }
+
+    //TODO add use to function which creates a stream from the collection of tvgs
+    @Override
+    public Stream<PGraph> toStream() {
+
+        return null;
     }
 }

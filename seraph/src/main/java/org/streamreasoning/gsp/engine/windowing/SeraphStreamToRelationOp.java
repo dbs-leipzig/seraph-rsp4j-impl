@@ -14,9 +14,11 @@ import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.Observable
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.instance.Window;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.instance.WindowImpl;
 import org.streamreasoning.rsp4j.api.querying.ContinuousQueryExecution;
+import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVarying;
 import org.streamreasoning.rsp4j.api.secret.content.Content;
 import org.streamreasoning.rsp4j.api.secret.report.Report;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
+import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -121,6 +123,11 @@ public class SeraphStreamToRelationOp extends ObservableStreamToRelationOp<PGrap
         Content<PGraph, PGraph> content = active_windows.containsKey(w) ? active_windows.get(w) : new EmptyPGraphContent();
         time.setAppTime(t_e);
         return setVisible(t_e, w, content);
+    }
+
+    @Override
+    public TimeVarying<PGraph> apply(DataStream<PGraph> s) {
+        return null;
     }
 
     @Override

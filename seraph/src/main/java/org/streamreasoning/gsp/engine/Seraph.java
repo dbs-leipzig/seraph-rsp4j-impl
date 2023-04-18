@@ -26,8 +26,7 @@ import org.streamreasoning.rsp4j.api.secret.report.ReportImpl;
 import org.streamreasoning.rsp4j.api.secret.report.strategies.OnWindowClose;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
 import org.streamreasoning.rsp4j.api.secret.time.TimeImpl;
-import org.streamreasoning.rsp4j.api.stream.data.WebDataStream;
-import org.streamreasoning.rsp4j.api.stream.web.WebStream;
+import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +49,7 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
     protected Map<String, ContinuousQueryExecution> queryExecutions;
     protected Map<String, ContinuousQuery> registeredQueries;
     protected Map<String, List<QueryResultFormatter>> queryObservers;
-    protected Map<String, WebDataStream<PGraph>> registeredStreams;
+    protected Map<String, DataStream<PGraph>> registeredStreams;
     private ReportGrain report_grain;
 
     //Create new neo4j graph database that will be used for the streaming data set
@@ -81,17 +80,17 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
 
         //STREAM DECLARATION
         //register all the input streams declared in the query
-        List<WebDataStream<PGraph>> in = new ArrayList<>();
+        List<DataStream<PGraph>> in = new ArrayList<>();
         q.getInputStreams().forEach(s -> {
             PGStream register = this.register(new PGStream(s));
             in.add(register);
         });
 
         //empty stream
-        WebStream stream = q.getOutputStream();
+        DataStream stream = q.getOutputStream();
 
         //create a new output stream
-        WebDataStream<Map<String, Object>> out = new WebDataStream<Map<String, Object>>() {
+        DataStream<Map<String, Object>> out = new DataStream<Map<String, Object>>() {
 
             List<Consumer<Map<String, Object>>> consumers = new ArrayList<>();
             String uri = "out"; // q.getOutputStream().uri();

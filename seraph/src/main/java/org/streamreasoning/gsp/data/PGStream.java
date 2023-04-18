@@ -1,12 +1,12 @@
 package org.streamreasoning.gsp.data;
 
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.Consumer;
-import org.streamreasoning.rsp4j.api.stream.data.WebDataStream;
+import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PGStream implements WebDataStream<PGraph>{
+public class PGStream implements DataStream<PGraph> {
 
     protected String stream_uri;
 
@@ -27,8 +27,8 @@ public class PGStream implements WebDataStream<PGraph>{
     }
 
     @Override
-    public String uri() {
-        return stream_uri;
+    public String getName() {
+        return null;
     }
 
 
