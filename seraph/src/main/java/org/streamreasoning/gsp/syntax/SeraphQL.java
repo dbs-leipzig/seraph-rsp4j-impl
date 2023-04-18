@@ -14,6 +14,7 @@ import org.streamreasoning.rsp4j.yasper.querying.operators.windowing.WindowNodeI
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+//Seraph query
 public class SeraphQL implements ContinuousQuery {
 
     private R2R r2r;
@@ -115,6 +116,7 @@ public class SeraphQL implements ContinuousQuery {
                 i.getAndIncrement();
                 WebStreamImpl webStream = new WebStreamImpl(k);
                 WindowNodeImpl windowNode = new WindowNodeImpl(RDFUtils.createIRI(k + "/w" + i), v.range, r2S.period, 0);
+                //add windownode and webstream to the map, if the key value pair doesnt already exist
                 map.putIfAbsent(windowNode, webStream);
             });
         });

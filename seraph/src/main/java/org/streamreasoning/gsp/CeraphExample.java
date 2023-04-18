@@ -21,10 +21,13 @@ public class CeraphExample {
 
     public static void main(String[] args) throws ConfigurationException, IOException {
 
+        //Load engine configuration from yasper/target/classes/csparql.properties
         EngineConfiguration ec = EngineConfiguration.loadConfig("/csparql.properties");
 
+        //Create new seraph engine with the loaded configuration
         Seraph sr = new Seraph(ec);
 
+        //parses the seraph query and saves the information into a continuous query
         ContinuousQuery q = QueryFactory.parse("" +
                 "REGISTER <kafka://example> {\n" +
                 "FROM STREAM  <http://stream1> STARTING FROM LATEST\n" +
@@ -34,14 +37,15 @@ public class CeraphExample {
                 "EMIT SNAPSHOT EVERY PT5S " +
                 "INTO <http://stream2> }\n");
 
-        //register the seraph query
+        //register the parsed seraph query as Neo4jContinuousQueryExecution
         ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>> cqe = sr.register(q);
 
+        //Create a thread that creates the property graph stream for each stream registered in the ContinuousQueryExecution
         Arrays.stream(cqe.instream()).forEach(s -> {
-            //Create a thread that creates the property graph stream for each stream registered in the ContinuousQueryExecution
             new Thread(new Source(s)).start();
         });
 
+        //add Consumer to the outstream that outputs the timestamp, key and value for each update of the output stream
         cqe.outstream().addConsumer((arg, ts) -> arg.forEach((k, v) -> System.out.println(ts + "---> (" + k + "," + v + ")")));
 
     }

@@ -53,6 +53,7 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
     protected Map<String, WebDataStream<PGraph>> registeredStreams;
     private ReportGrain report_grain;
 
+    //Create new neo4j graph database that will be used for the streaming data set
     TestDatabaseManagementServiceBuilder builder = new TestDatabaseManagementServiceBuilder();
     DatabaseManagementService dbm = builder.impermanent().build();
     GraphDatabaseService db = dbm.database(DEFAULT_DATABASE_NAME);
@@ -79,15 +80,17 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
 
 
         //STREAM DECLARATION
+        //register all the input streams declared in the query
         List<WebDataStream<PGraph>> in = new ArrayList<>();
         q.getInputStreams().forEach(s -> {
             PGStream register = this.register(new PGStream(s));
             in.add(register);
         });
 
-        //empty output stream
+        //empty stream
         WebStream stream = q.getOutputStream();
 
+        //create a new output stream
         WebDataStream<Map<String, Object>> out = new WebDataStream<Map<String, Object>>() {
 
             List<Consumer<Map<String, Object>>> consumers = new ArrayList<>();
@@ -111,12 +114,16 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
             }
         };
 
+        //use the neo4j database as a streaming data set
         SDS sds = new SeraphSDSImpl(db);
 
+        //register the operator, which will execute the cypher query on each eval timestamp
         RelationToRelationOperator<Map<String, Object>> r2r = new SeraphR2R(q, sds, "", db);
 
+        //create a new report which defines, when the contents of the stream will become visible for the query
         Report r = new ReportImpl();
 
+        //define the strategy for the report: contents become visible for evaluation when the sliding window closes
         r.add(new OnWindowClose());
 
         Time time = q.getTime();
@@ -144,6 +151,7 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
 
                 TimeVarying<PGraph> t = wo.apply(s, RDFUtils.createIRI(s.uri()));
 
+                //add time varying graph to the streaming data set (graph data base)
                 sds.add(t);
 
 

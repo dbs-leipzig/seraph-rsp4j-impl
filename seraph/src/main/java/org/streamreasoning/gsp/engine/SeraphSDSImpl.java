@@ -49,6 +49,7 @@ final public class SeraphSDSImpl implements SDS<PGraph> {
 
     }
 
+    //add time varying graph to the sds (streaming data set)
     @Override
     public void add(TimeVarying<PGraph> tvg) {
         graphs.add(tvg);
