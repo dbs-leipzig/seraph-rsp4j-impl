@@ -1,23 +1,31 @@
-    <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>it.polimi.sr.rsp</groupId>
-    <artifactId>rsp4j</artifactId>
+    <groupId>org.streamreasoning.rsp4j</groupId>
+    <artifactId>rsp4j-parent</artifactId>
     <version>1.0.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <github.release>${project.version}</github.release>
-        <lombok.version>1.18.20</lombok.version>
+        <rsp4j.version>1.0.1</rsp4j.version>
     </properties>
 
     <packaging>pom</packaging>
     <modules>
         <module>api</module>
         <module>yasper</module>
-        <module>seraph</module>
         <module>examples</module>
+        <module>operatorapi</module>
+        <module>io</module>
+        <module>web</module>
+        <!--<module>csparql-rsp4j</module>
+        <module>cqels-rsp4j</module>-->
+        <module>csparql2</module>
+        <module>dsms</module>
+        <module>reasoning</module>
+        <module>mapping</module>
     </modules>
 
     <dependencyManagement>
@@ -50,7 +58,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
+                <version>1.18.20</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -73,22 +81,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>9</source>
+                    <target>9</target>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -114,5 +114,16 @@
             <artifactId>commons-rdf-api</artifactId>
             <version>0.5.0</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-rdf-jena</artifactId>-->
+<!--            <version>0.5.0</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.github.jsonld-java</groupId>-->
+<!--                    <artifactId>jsonld-java</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
     </dependencies>
 </project>
