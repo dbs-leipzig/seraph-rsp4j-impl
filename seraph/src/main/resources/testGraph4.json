@@ -1,0 +1,40 @@
+{
+  "timestamp" : 1,
+  "nodes" : [
+    {
+      "id" : 3,
+      "labels" : ["Station"],
+      "properties" : {}
+    },
+    {
+      "id" : 7,
+      "labels" : ["Bike"],
+      "properties" : {}
+    },
+    {
+      "id" : 8,
+      "labels" : ["Bike"],
+      "properties" : {}
+    }
+  ],
+  "edges" : [
+    {
+      "from" : 8,
+      "to" : 3,
+      "labels" : ["returnedAt"],
+      "properties" : {
+        "user_id" : 5678,
+        "val_time" : 54900000
+      }
+    },
+    {
+      "from" : 7,
+      "to" : 3,
+      "labels" : ["rentedAt"],
+      "properties" : {
+        "user_id" : 5678,
+        "val_time" : 55080000
+      }
+    }
+  ]
+}

@@ -12,6 +12,8 @@ import org.streamreasoning.rsp4j.api.querying.ContinuousQueryExecution;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CeraphExample {
 
@@ -29,8 +31,12 @@ public class CeraphExample {
                 "REGISTER <kafka://example> {\n" +
                 "FROM STREAM  <http://stream1> STARTING FROM LATEST\n" +
                 "WITH WINDOW RANGE PT10S\n" +
-                "MATCH (n:Person)-[p]->(n1:Person)\n" +
-                "RETURN *\n" +
+                "MATCH (b1:Bike)-[r1:returnedAt]->(s:Station)\n" +
+                //"(b1)-[n1:returnedAt]->(p:Station), \n" +
+                //"(b2:Bike)-[r2:rentedAt]->(p), " +
+                //"(b2)-[n2:returnedAt]->(o:Station)\n" +
+                //"WHERE r1.user_id = 5678.0\n" +
+                "RETURN r1.user_id\n" +
                 "EMIT SNAPSHOT EVERY PT5S " +
                 "INTO <http://stream2> }\n");
 
@@ -42,7 +48,16 @@ public class CeraphExample {
             new Thread(new Source(s)).start();
         });
 
+
         cqe.outstream().addConsumer((arg, ts) -> arg.forEach((k, v) -> System.out.println(ts + "---> (" + k + "," + v + ")")));
 
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("-----------------------------");
+            }
+        }, 5000, 5000);
     }
 }
