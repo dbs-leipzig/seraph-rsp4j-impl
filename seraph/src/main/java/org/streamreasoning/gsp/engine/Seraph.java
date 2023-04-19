@@ -5,7 +5,6 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.test.TestDatabaseManagementServiceBuilder;
 import org.streamreasoning.gsp.data.PGStream;
 import org.streamreasoning.gsp.data.PGraph;
-import org.streamreasoning.gsp.engine.windowing.SeraphStreamToRelationOp;
 import org.streamreasoning.gsp.engine.windowing.SeraphTimeWindowOperatorFactory;
 import org.streamreasoning.rsp4j.api.RDFUtils;
 import org.streamreasoning.rsp4j.api.engine.config.EngineConfiguration;
@@ -25,7 +24,6 @@ import org.streamreasoning.rsp4j.api.secret.report.Report;
 import org.streamreasoning.rsp4j.api.secret.report.ReportImpl;
 import org.streamreasoning.rsp4j.api.secret.report.strategies.OnWindowClose;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
-import org.streamreasoning.rsp4j.api.secret.time.TimeImpl;
 import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 
 import java.util.ArrayList;
@@ -73,8 +71,26 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
 
     }
 
+
     @Override
-    public ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>> register(ContinuousQuery q) {
+    public  ContinuousQueryExecution<PGraph, PGraph, SeraphBinding, SeraphBinding> register(ContinuousQuery q){
+
+        //ToDo check if sdsimpl needs to be changed -> probably not
+        //create new streaming data set by using the neo4j database as sds
+        SDS<PGraph> sds = new SeraphSDSImpl(db);
+
+        //create output stream
+        DataStream<SeraphBinding> out = new SeraphStreamImpl<SeraphBinding>(q.getID());
+
+        ContinuousQueryExecution<PGraph, PGraph, SeraphBinding, SeraphBinding> cqe = new Neo4jContinuousQueryExecutionImpl<PGraph,PGraph,SeraphBinding,SeraphBinding>(sds, q, out, q.r2r(), q.r2s());
+
+
+
+
+    }
+    /*
+    @Override
+    public ContinuousQueryExecution<PGraph, PGraph, SeraphBinding, SeraphBinding> register(ContinuousQuery q) {
 //        return new ContinuousQueryExecutionFactoryImpl(q, windowOperatorFactory, registeredStreams, report, report_grain, tick, t0).build();
 
 
@@ -129,7 +145,8 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
 
         RelationToStreamOperator<Map<String, Object>> r2s = new SeraphRStream();
 
-        Neo4jContinuousQueryExecution cqe = new Neo4jContinuousQueryExecution(
+        //changed from neo4jqexec to execImpl
+        Neo4jContinuousQueryExecutionImpl cqe = new Neo4jContinuousQueryExecutionImpl(
                 out,
                 in,
                 q,
@@ -212,7 +229,7 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
 //        });
         return cqe;
     }
-
+*/
     @Override
     public PGStream register(PGStream s) {
         registeredStreams.put(s.uri(), s);
