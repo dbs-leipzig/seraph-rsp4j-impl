@@ -17,6 +17,7 @@ package org.streamreasoning.gsp.engine; /**
  */
 
 import org.apache.commons.rdf.api.IRI;
+import org.apache.jena.base.Sys;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.streamreasoning.gsp.data.PGraph;
 import org.streamreasoning.rsp4j.api.sds.SDS;
@@ -58,6 +59,7 @@ final public class SeraphSDSImpl implements SDS<PGraph> {
 
     @Override
     public SDS<PGraph> materialize(long ts) {
+        System.out.println("SDS IMPL TEST");
         return SDS.super.materialize(ts);
     }
 

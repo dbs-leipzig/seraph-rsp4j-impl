@@ -22,6 +22,9 @@ public class SeraphStreamImpl<T> implements DataStream<T> {
 
     @Override
     public void put(T e, long ts) {
+
+        System.out.println("TEST StreamImpl");
+
         consumers.forEach(graphConsumer -> graphConsumer.notify(e, ts));
     }
 
