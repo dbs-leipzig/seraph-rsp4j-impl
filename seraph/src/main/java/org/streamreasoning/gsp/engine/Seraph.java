@@ -1,14 +1,10 @@
 package org.streamreasoning.gsp.engine;
 
-import org.apache.commons.rdf.api.Graph;
-import org.bouncycastle.asn1.dvcs.Data;
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.test.TestDatabaseManagementServiceBuilder;
 import org.streamreasoning.gsp.data.PGStream;
 import org.streamreasoning.gsp.data.PGraph;
-import org.streamreasoning.gsp.engine.windowing.SeraphTimeWindowOperatorFactory;
-import org.streamreasoning.rsp4j.api.RDFUtils;
 import org.streamreasoning.rsp4j.api.engine.config.EngineConfiguration;
 import org.streamreasoning.rsp4j.api.engine.features.QueryRegistrationFeature;
 import org.streamreasoning.rsp4j.api.engine.features.StreamRegistrationFeature;
@@ -18,7 +14,6 @@ import org.streamreasoning.rsp4j.api.format.QueryResultFormatter;
 import org.streamreasoning.rsp4j.api.operators.r2r.RelationToRelationOperator;
 import org.streamreasoning.rsp4j.api.operators.r2s.RelationToStreamOperator;
 import org.streamreasoning.rsp4j.api.operators.s2r.StreamToRelationOperatorFactory;
-import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.Consumer;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.StreamToRelationOp;
 import org.streamreasoning.rsp4j.api.operators.s2r.syntax.WindowNode;
 import org.streamreasoning.rsp4j.api.querying.ContinuousQuery;
@@ -27,8 +22,6 @@ import org.streamreasoning.rsp4j.api.sds.SDS;
 import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVarying;
 import org.streamreasoning.rsp4j.api.secret.content.ContentFactory;
 import org.streamreasoning.rsp4j.api.secret.report.Report;
-import org.streamreasoning.rsp4j.api.secret.report.ReportImpl;
-import org.streamreasoning.rsp4j.api.secret.report.strategies.OnWindowClose;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
 import org.streamreasoning.rsp4j.api.secret.time.TimeImpl;
 import org.streamreasoning.rsp4j.api.stream.data.DataStream;
@@ -106,7 +99,7 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
 
 
     @Override
-    public  ContinuousQueryExecution<PGraph, PGraph, SeraphBinding, SeraphBinding> register(ContinuousQuery q){
+    public  ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, SeraphBinding> register(ContinuousQuery q){
 
         //ToDo check if SDSImpl needs to be changed -> probably not
         //create new streaming data set by using the neo4j database as sds
@@ -126,7 +119,10 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
             in.add(register);
         });
 
-        ContinuousQueryExecution<PGraph, PGraph, SeraphBinding, SeraphBinding> cqe = new Neo4jContinuousQueryExecutionImpl<PGraph,PGraph,SeraphBinding,SeraphBinding>(sds, q, out, in, q.r2r(), q.r2s());
+        SeraphRStream r2s = new SeraphRStream();
+        RelationToRelationOperator<PGraph, Map<String, Object>> r2r =  new SeraphR2R(q, sds, q.getID(), db);
+
+        ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, SeraphBinding> cqe = new Neo4jContinuousQueryExecutionImpl<PGraph,PGraph,Map<String, Object>,SeraphBinding>(sds, q, out, in, r2r,r2s);
 
         Map<? extends WindowNode, PGStream> windowMap = q.getWindowMap();
 

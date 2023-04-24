@@ -40,7 +40,7 @@ public class CeraphExample {
                 "INTO <http://stream2> }\n");
 
         //register the parsed seraph query as Neo4jContinuousQueryExecution
-        ContinuousQueryExecution<PGraph, PGraph, SeraphBinding, SeraphBinding> cqe = sr.register(q);
+        ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, SeraphBinding> cqe = sr.register(q);
 
         //Create a thread that creates the property graph stream for each stream registered in the ContinuousQueryExecution
 
@@ -50,8 +50,6 @@ public class CeraphExample {
        Arrays.stream(cqe.instream()).forEach(s -> {
             new Thread(new Source(s)).start();
         });
-
-
 
 
         //add Consumer to the outstream that outputs the timestamp, key and value for each update of the output stream

@@ -22,7 +22,8 @@ public class PGStream implements DataStream<PGraph> {
     }
 
     @Override
-    public void put(PGraph e, long ts) {
+    public void put(PGraph e, long ts)
+    {   System.out.println("PGStream put TEST");
         consumers.forEach(graphConsumer -> graphConsumer.notify(e, ts));
     }
 

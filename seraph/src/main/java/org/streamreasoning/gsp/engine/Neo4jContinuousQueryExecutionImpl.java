@@ -73,6 +73,7 @@ public class Neo4jContinuousQueryExecutionImpl<I, W, R, O> extends Neo4jContinuo
 
     @Override
     public StreamToRelationOp<I, W>[] s2rs() {
+        System.out.println("TEST NEO4J s2rs");
         StreamToRelationOp<I, W>[] a = new StreamToRelationOp[s2rs.size()];
         return s2rs.toArray(a);
     }
