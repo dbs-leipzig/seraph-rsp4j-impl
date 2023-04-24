@@ -250,4 +250,9 @@ public class SimpleRSPQLQuery<O> implements RSPQL<O> {
     public List<Var> getProjections(){
         return projections;
     }
+
+    @Override
+    public List<String> getInputStreams() {
+        return null;
+    }
 }

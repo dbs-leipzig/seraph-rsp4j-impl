@@ -18,6 +18,8 @@ public interface ContinuousQueryExecution<I, W, R, O> {
 
     DataStream<O> outstream();
 
+    DataStream<I>[] instream();
+
     TimeVarying<Collection<R>> output();
 
     ContinuousQuery query();

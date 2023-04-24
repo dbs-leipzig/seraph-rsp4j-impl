@@ -9,6 +9,7 @@ import org.streamreasoning.rsp4j.api.querying.result.SolutionMapping;
 import org.streamreasoning.rsp4j.api.sds.SDS;
 import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVarying;
 import org.streamreasoning.rsp4j.api.stream.data.DataStream;
+import org.streamreasoning.rsp4j.io.DataStreamImpl;
 
 import javax.xml.crypto.Data;
 import java.util.*;
@@ -29,22 +30,30 @@ public class Neo4jContinuousQueryExecutionImpl<I, W, R, O> extends Neo4jContinuo
     private final DataStream<O> out;
     private List<StreamToRelationOp<I, W>> s2rs;
 
+    private final List<DataStream<PGraph>> instreams;
 
 
-    public Neo4jContinuousQueryExecutionImpl(SDS<PGraph> sds, ContinuousQuery query, DataStream<O> outstream, RelationToRelationOperator<W, R>r2r, RelationToStreamOperator<R,O> r2s, StreamToRelationOp<I,W>... s2rs) {
+
+    public Neo4jContinuousQueryExecutionImpl(SDS sds, ContinuousQuery query, DataStream<O> outstream, List<DataStream<PGraph>> instreams, RelationToRelationOperator<W, R>r2r, RelationToStreamOperator<R,O> r2s, StreamToRelationOp<I,W>... s2rs) {
         super(sds, query);
         this.s2rs = Arrays.asList(s2rs);
         this.query = query;
         this.sds = sds;
         this.r2r = r2r;
         this.r2s = r2s;
-        this.out = out;
+        this.out = outstream;
+        this.instreams = instreams;
 
 }
 
     @Override
     public DataStream<O> outstream() {
         return out;
+    }
+
+    @Override
+    public DataStream<I>[] instream() {
+        return  instreams.toArray(new DataStream[instreams.size()]);
     }
 
     @Override

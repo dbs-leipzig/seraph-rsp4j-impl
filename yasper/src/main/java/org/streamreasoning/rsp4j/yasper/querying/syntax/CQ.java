@@ -119,4 +119,9 @@ public class CQ<O> implements RSPQL<O> {
     public List<Aggregation> getAggregations() {
         return Collections.emptyList();
     }
+
+    @Override
+    public List<String> getInputStreams() {
+        return null;
+    }
 }

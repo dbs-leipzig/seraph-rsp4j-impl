@@ -9,24 +9,34 @@ import org.streamreasoning.rsp4j.api.operators.s2r.StreamToRelationOperatorFacto
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.StreamToRelationOp;
 import org.streamreasoning.rsp4j.api.querying.ContinuousQueryExecution;
 import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVarying;
+import org.streamreasoning.rsp4j.api.secret.content.ContentFactory;
 import org.streamreasoning.rsp4j.api.secret.report.Report;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
-import org.streamreasoning.rsp4j.api.stream.data.WebDataStream;
+
 
 import java.util.Map;
 
 public class SeraphTimeWindowOperatorFactory implements StreamToRelationOperatorFactory<PGraph, PGraph> {
 
-    private final long a, b;
     private final Time time;
     private final Tick tick;
     private final Report report;
     private final ReportGrain grain;
-    private final GraphDatabaseService db;
-    private ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>> context;
+    //private final GraphDatabaseService db;
+   // private ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>> context;
+    private final ContentFactory<PGraph, PGraph> cf;
 
     //TODO add contentfactory cf -> csparqltimewindowoperatorfactory
-    public SeraphTimeWindowOperatorFactory(long a, long b, Time time, Tick tick, Report report, ReportGrain grain, ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>> context, GraphDatabaseService db) {
+    //new constructor
+    public SeraphTimeWindowOperatorFactory(Time time, Tick tick, Report report, ReportGrain grain, ContentFactory<PGraph, PGraph> cf) {
+
+        this.time = time;
+        this.tick = tick;
+        this.report = report;
+        this.grain = grain;
+        this.cf = cf;
+  }
+   /* public SeraphTimeWindowOperatorFactory(long a, long b, Time time, Tick tick, Report report, ReportGrain grain, ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>> context, GraphDatabaseService db) {
         this.a = a;
         this.b = b;
         this.time = time;
@@ -35,14 +45,25 @@ public class SeraphTimeWindowOperatorFactory implements StreamToRelationOperator
         this.grain = grain;
         this.context = context;
         this.db = db;
-    }
+    }*/
 
 
+
+
+/* old function -> no longer in use
     @Override
     public TimeVarying<PGraph> apply(WebDataStream<PGraph> s, IRI iri) {
         StreamToRelationOp<PGraph, PGraph> windowStreamToRelationOp = new SeraphStreamToRelationOp(iri, a, b, time, tick, report, grain, db);
         s.addConsumer(windowStreamToRelationOp);
         context.add(windowStreamToRelationOp);
         return windowStreamToRelationOp.get();
+    }
+*/
+
+    @Override
+    //ToDo change call of seraphStreamToRelationOp
+    public StreamToRelationOp<PGraph, PGraph> build(long a, long b, long t0) {
+        return  new SeraphStreamToRelationOp<>(null, a, time, tick, report, grain, cf);
+
     }
 }

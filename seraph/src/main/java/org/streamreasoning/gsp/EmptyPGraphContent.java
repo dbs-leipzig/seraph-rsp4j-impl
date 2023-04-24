@@ -1,10 +1,9 @@
 package org.streamreasoning.gsp;
 
-import org.apache.commons.rdf.api.Graph;
 import org.streamreasoning.gsp.data.PGraph;
 import org.streamreasoning.rsp4j.api.secret.content.Content;
 
-public class EmptyPGraphContent implements Content<PGraph, PGraph> {
+public class EmptyPGraphContent<T1, T2> implements Content<T1, T2> {
 
     long ts = System.currentTimeMillis();
 
@@ -14,17 +13,16 @@ public class EmptyPGraphContent implements Content<PGraph, PGraph> {
     }
 
     @Override
-    public void add(PGraph e) {
-        throw new UnsupportedOperationException();
-    }
+    public void add(T1 e) {
 
+    }
     @Override
     public Long getTimeStampLastUpdate() {
         return ts;
     }
 
     @Override
-    public PGraph coalesce() {
+    public T2 coalesce() {
         return null;
     }
 }

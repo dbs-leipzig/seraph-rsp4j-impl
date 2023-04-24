@@ -5,13 +5,13 @@ import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.StreamToRe
 import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVarying;
 import org.apache.commons.rdf.api.IRI;
 
-public class TimeVaryingPGraph implements TimeVarying<PGraph> {
+public class TimeVaryingPGraph<T1, T2> implements TimeVarying<PGraph> {
 
-    private final StreamToRelationOp<PGraph, PGraph> op;
+    private final StreamToRelationOp<T1, T2> op;
     private IRI name;
     private PGraph graph;
 
-    public TimeVaryingPGraph(StreamToRelationOp<PGraph, PGraph> op, IRI name, PGraph graph) {
+    public TimeVaryingPGraph(StreamToRelationOp<T1, T2> op, IRI name, PGraph graph) {
         this.op = op;
         this.name = name;
         this.graph = graph;
@@ -24,7 +24,7 @@ public class TimeVaryingPGraph implements TimeVarying<PGraph> {
      **/
     @Override
     public void materialize(long ts) {
-        graph = op.content(ts).coalesce();
+        graph = (PGraph) op.content(ts).coalesce();
     }
 
     @Override

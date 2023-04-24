@@ -67,4 +67,6 @@ public interface ContinuousQuery<I, W, R, O> {//extends Task<I, Binding, O> {
     }
 
     default List<Var> getProjections(){return Collections.emptyList();}
+
+   List<String> getInputStreams();
 }

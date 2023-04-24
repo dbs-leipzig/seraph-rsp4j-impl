@@ -1,6 +1,6 @@
 package org.streamreasoning.gsp;
 
-import org.streamreasoning.rsp4j.yasper.querying.syntax.QueryFactory;
+//import org.streamreasoning.rsp4j.yasper.querying.syntax.QueryFactory;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -45,6 +45,11 @@ public class ContinuousQueryExecutionImpl<I, W, R, O> extends ContinuousQueryExe
     }
 
     @Override
+    public DataStream<I>[] instream() {
+        return new DataStream[0];
+    }
+
+    @Override
     public TimeVarying<Collection<R>> output() {
         return r2r.apply(sds);
     }

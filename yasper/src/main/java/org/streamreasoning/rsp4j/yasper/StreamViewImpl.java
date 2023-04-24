@@ -40,6 +40,11 @@ public class StreamViewImpl extends Observable implements ContinuousQueryExecuti
     }
 
     @Override
+    public DataStream<Triple>[] instream() {
+        return new DataStream[0];
+    }
+
+    @Override
     public TimeVarying<Collection<Triple>> output() {
         return null;
     }

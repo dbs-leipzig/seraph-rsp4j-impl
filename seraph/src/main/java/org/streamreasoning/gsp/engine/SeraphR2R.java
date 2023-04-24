@@ -1,5 +1,6 @@
 package org.streamreasoning.gsp.engine;
 
+import org.apache.commons.rdf.api.Graph;
 import org.apache.commons.rdf.api.Triple;
 import org.streamreasoning.gsp.data.PGraph;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -10,6 +11,7 @@ import org.streamreasoning.rsp4j.api.querying.ContinuousQuery;
 import org.streamreasoning.rsp4j.api.querying.result.SolutionMapping;
 import org.streamreasoning.rsp4j.api.sds.SDS;
 import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVarying;
+import org.streamreasoning.rsp4j.yasper.querying.SelectInstResponse;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +20,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SeraphR2R implements RelationToRelationOperator<Map<String, Object>> {
+import static java.time.Instant.now;
+
+public class SeraphR2R implements RelationToRelationOperator<PGraph, Map<String, Object>> {
 
     private final ContinuousQuery query;
     private final SDS<PGraph> sds;
@@ -39,15 +43,17 @@ public class SeraphR2R implements RelationToRelationOperator<Map<String, Object>
 
     }
 
-    //TODO change method override from eval(long) to eval(sds)
+
+    //todo add timestamp
     @Override
-    public Stream<SolutionMapping<Map<String,Object>>> eval(long ts) {
+    public Stream<Map<String, Object>> eval(Stream<PGraph> sds) {
         //TODO fix up to stream
+        Long ts = System.currentTimeMillis();
         String id = baseURI + "result;" + ts;
         this.tx = db.beginTx();
 
         //execute the cypher query
-        Result result = tx.execute(query.getR2R().toString());
+        Result result = tx.execute(query.r2r().toString());
 //        |--name-|--age--|-email--|
 //        |--Fred--|--22--|--null--|
 //        |--Riccardo--|--29--|--null--|
@@ -63,39 +69,24 @@ public class SeraphR2R implements RelationToRelationOperator<Map<String, Object>
         tx.commit();
         tx.close();
 
-        return res.stream().map(b -> new SolutionMappingImpl<>(id, b, this.resultVars, ts));
-    }
+        return res.stream();
 
 
-    @Override
-    public Stream eval(SDS<PGraph> sds) {
-        return new TimeVarying<Collection<Triple>>() {
-            @Override
-            public void materialize(long ts) {
-                List<Triple> collect = eval(sds.toStream()).collect(Collectors.toList());
-                solutions.clear();
-                solutions.addAll(collect);
-            }
 
-            @Override
-            public Collection<Triple> get() {
-                return solutions;
-            }
-
-            @Override
-            public String iri() {
-                return null;
-            }
-        };
     }
 
     @Override
-    public TimeVarying<Collection> apply(SDS sds) {
+    public TimeVarying<Collection<Map<String, Object>>> apply(SDS<PGraph> sds) {
         return null;
     }
 
     @Override
-    public SolutionMapping createSolutionMapping(Object result) {
+    public SolutionMapping<Map<String, Object>> createSolutionMapping(Map<String, Object> result) {
+
         return null;
+        /*Long ts = System.currentTimeMillis();
+        String id = baseURI + "result;" + ts;
+        return new SolutionMappingImpl<>(id, );*/
     }
+
 }
