@@ -31,6 +31,26 @@ public class PGStream implements DataStream<PGraph> {
         return null;
     }
 
+    @Override
+    public int hashCode(){
+        if (stream_uri != null) return stream_uri.hashCode();
+        return -1;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PGStream other = (PGStream) obj;
+        if (stream_uri != other.stream_uri)
+            return false;
+        return true;
+    }
+
 
 
 }

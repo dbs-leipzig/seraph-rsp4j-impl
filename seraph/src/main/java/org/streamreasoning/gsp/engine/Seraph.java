@@ -236,6 +236,7 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
 
         return cqe;
     }
+
     /*
     @Override
     public ContinuousQueryExecution<PGraph, PGraph, SeraphBinding, SeraphBinding> register(ContinuousQuery q) {

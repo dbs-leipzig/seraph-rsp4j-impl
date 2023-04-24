@@ -29,9 +29,6 @@ public class CeraphExample {
         //Create new seraph engine with the loaded configuration
         Seraph sr = new Seraph(ec);
 
-        PGStream stream = new PGStream("http://stream1");
-        sr.register(stream);
-
         //parses the seraph query and saves the information into a continuous query
         ContinuousQuery q = QueryFactory.parse("" +
                 "REGISTER <kafka://example> {\n" +

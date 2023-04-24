@@ -96,6 +96,7 @@ public class Neo4jContinuousQueryExecutionImpl<I, W, R, O> extends Neo4jContinuo
     public void update(Observable o, Object arg) {
         Long now = (Long) arg;
         r2s.eval(eval(now), now).forEach(o1 -> outstream().put(o1, now));
+        System.out.println(now);
     }
 
     @Override
