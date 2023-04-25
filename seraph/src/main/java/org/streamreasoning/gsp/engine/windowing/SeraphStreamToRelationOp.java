@@ -3,9 +3,8 @@ package org.streamreasoning.gsp.engine.windowing;
 import org.apache.commons.rdf.api.IRI;
 import org.apache.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.streamreasoning.gsp.EmptyPGraphContent;
-import org.streamreasoning.gsp.data.PGraph;
 import org.streamreasoning.gsp.data.PGraphImpl;
+import org.streamreasoning.gsp.engine.ContentPGraph;
 import org.streamreasoning.gsp.engine.TimeVaryingPGraph;
 import org.streamreasoning.rsp4j.api.enums.ReportGrain;
 import org.streamreasoning.rsp4j.api.enums.Tick;
@@ -38,6 +37,8 @@ public class SeraphStreamToRelationOp<T1, T2> extends ObservableStreamToRelation
     private long t0;
     private long tc0;
     private long toi;
+
+    Long b = 5000L;
 
     //ToDo check if works: add content factory to constructor
     public SeraphStreamToRelationOp(IRI iri, long a, Time instance, Tick tick, Report report, ReportGrain grain, ContentFactory<T1, T2> cf) {
@@ -93,7 +94,7 @@ public class SeraphStreamToRelationOp<T1, T2> extends ObservableStreamToRelation
     }
 
     //ToDo: check if works: copied windowing function from CQELSStreamToRelationOP
-    /*public void windowing(PGraph e, long timestamp) {
+    public void windowing(T1 e, long timestamp) {
 
         long t_e = timestamp;
 
@@ -126,8 +127,10 @@ public class SeraphStreamToRelationOp<T1, T2> extends ObservableStreamToRelation
 
         to_evict.clear();
     }
-     */
-    public void windowing(T1 e, long ts) {
+     
+    /*public void windowing(T1 e, long ts) {
+       //ToDo remove println
+        System.out.println("SS2ROP windowing TEST");
         log.debug("Received element (" + e + "," + ts + ")");
         long t_e = ts;
 
@@ -168,20 +171,24 @@ public class SeraphStreamToRelationOp<T1, T2> extends ObservableStreamToRelation
         to_evict.forEach(windows::remove);
         to_evict.clear();
     }
+    */
+    
 
     //ToDo: check if works: copied scope function from CQELSStreamToRelationOP
-    /*private void scope(long t_e) {
+    private void scope(long t_e) {
+
         long c_sup = (long) Math.ceil(((double) Math.abs(t_e - t0) / (double) b)) * b;
         long o_i = c_sup - a;
 
         do {
             windows
-                    .computeIfAbsent(new WindowImpl(o_i, o_i + a), x -> new ContentPGraph(db));
+                    .computeIfAbsent(new WindowImpl(o_i, o_i + a), x -> (Content<T1, T2>) new ContentPGraph(db));
             o_i += b;
 
         } while (o_i <= t_e);
 
-    }*/
+    }
+    /*
     private Window scope(long t_e) {
         long o_i = t_e - a;
         log.debug("Calculating the Windows to Open. First one opens at [" + o_i + "] and closes at [" + t_e + "]");
@@ -190,7 +197,7 @@ public class SeraphStreamToRelationOp<T1, T2> extends ObservableStreamToRelation
         WindowImpl active = new WindowImpl(o_i, t_e);
         windows.computeIfAbsent(active, window -> cf.create());
         return active;
-    }
+    }*/
 
 
 
@@ -204,15 +211,26 @@ public class SeraphStreamToRelationOp<T1, T2> extends ObservableStreamToRelation
         return setVisible(t_e, w, content);
     }
 
+
     @Override
     public TimeVarying<T2> apply(DataStream<T1> s) {
-        return null;
+        s.addConsumer(this);
+        return this.get();
     }
 
     @Override
-    public StreamToRelationOp<T1, T2> link(ContinuousQueryExecution<T1, T2, ?, ?> context) {
+    public StreamToRelationOp<T1, T2> link(ContinuousQueryExecution<T1, T2, ?, ?> context, GraphDatabaseService db) {
+        if(db == null){
+        }else {
+            this.db = db;
+        }
         this.addObserver((Observer) context);
         return this;
+    }
+
+    @Override
+    public StreamToRelationOp<T1, T2> link(ContinuousQueryExecution context) {
+        return null;
     }
 
     @Override

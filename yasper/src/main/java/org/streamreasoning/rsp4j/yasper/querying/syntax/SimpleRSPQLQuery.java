@@ -187,6 +187,12 @@ public class SimpleRSPQLQuery<O> implements RSPQL<O> {
             return new MultipleGraphR2R(r2rs);
 
     }
+
+    @Override
+    public String getR2R() {
+        return null;
+    }
+
     private RelationToRelationOperator<Graph, Binding> createFilter(String graph){
         return addFiltersIfDefined(graph, null);
     }
@@ -253,6 +259,11 @@ public class SimpleRSPQLQuery<O> implements RSPQL<O> {
 
     @Override
     public List<String> getInputStreams() {
+        return null;
+    }
+
+    @Override
+    public List<String> getResultVars() {
         return null;
     }
 }

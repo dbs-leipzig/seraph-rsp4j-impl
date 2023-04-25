@@ -2,6 +2,7 @@ package org.streamreasoning.rsp4j.yasper.querying.operators.windowing;
 
 import org.apache.commons.rdf.api.IRI;
 import org.apache.log4j.Logger;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.streamreasoning.rsp4j.api.enums.ReportGrain;
 import org.streamreasoning.rsp4j.api.enums.Tick;
 import org.streamreasoning.rsp4j.api.exceptions.OutOfOrderElementException;
@@ -113,6 +114,12 @@ public class CQELSTimeWindowOperatorBinding<T1, T2> extends ObservableStreamToRe
         to_evict.forEach(windows::remove);
         to_evict.clear();
     }
+
+    @Override
+    public StreamToRelationOp<T1, T2> link(ContinuousQueryExecution<T1, T2, ?, ?> context, GraphDatabaseService db) {
+        return null;
+    }
+
 
     private Window scope(long t_e) {
         long o_i = t_e - a;

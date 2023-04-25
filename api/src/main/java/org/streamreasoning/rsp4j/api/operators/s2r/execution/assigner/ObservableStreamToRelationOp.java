@@ -2,9 +2,11 @@ package org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner;
 
 import org.apache.commons.rdf.api.IRI;
 import org.apache.log4j.Logger;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.streamreasoning.rsp4j.api.enums.ReportGrain;
 import org.streamreasoning.rsp4j.api.enums.Tick;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.instance.Window;
+import org.streamreasoning.rsp4j.api.querying.ContinuousQueryExecution;
 import org.streamreasoning.rsp4j.api.secret.content.Content;
 import org.streamreasoning.rsp4j.api.secret.content.ContentFactory;
 import org.streamreasoning.rsp4j.api.secret.report.Report;
@@ -43,6 +45,8 @@ public abstract class ObservableStreamToRelationOp<E, O> extends Observable impl
 
     @Override
     public void notify(E arg, long ts) {
+        //ToDo remove println
+        System.out.println("ObservableStreamToRelationOp notify test");
         windowing(arg, ts);
     }
 
@@ -74,4 +78,9 @@ public abstract class ObservableStreamToRelationOp<E, O> extends Observable impl
     public boolean named() {
         return iri != null;
     }
+
+    //change ot api to allow linking of GraphDatabaseService
+    public abstract StreamToRelationOp<E, O> link(ContinuousQueryExecution<E, O, ?, ?> context, GraphDatabaseService db);
+
+    public abstract StreamToRelationOp<E, O> link(ContinuousQueryExecution context);
 }

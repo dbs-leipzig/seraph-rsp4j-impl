@@ -106,6 +106,11 @@ public class CQ<O> implements RSPQL<O> {
     }
 
     @Override
+    public String getR2R() {
+        return null;
+    }
+
+    @Override
     public StreamToRelationOp[] s2r() {
         return new StreamToRelationOp[0];
     }
@@ -122,6 +127,11 @@ public class CQ<O> implements RSPQL<O> {
 
     @Override
     public List<String> getInputStreams() {
+        return null;
+    }
+
+    @Override
+    public List<String> getResultVars() {
         return null;
     }
 }

@@ -1,11 +1,8 @@
 package org.streamreasoning.gsp.syntax;
 
 
-import org.neo4j.fabric.config.FabricConfig;
-import org.neo4j.fabric.stream.InputDataStreamImpl;
 import org.streamreasoning.gsp.data.PGStream;
 import org.streamreasoning.rsp4j.api.RDFUtils;
-import org.streamreasoning.rsp4j.api.enums.StreamOperator;
 import org.streamreasoning.rsp4j.api.operators.r2r.RelationToRelationOperator;
 import org.streamreasoning.rsp4j.api.operators.r2s.RelationToStreamOperator;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.StreamToRelationOp;
@@ -15,7 +12,6 @@ import org.streamreasoning.rsp4j.api.querying.ContinuousQuery;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
 import org.streamreasoning.rsp4j.api.secret.time.TimeFactory;
 import org.streamreasoning.rsp4j.api.stream.data.DataStream;
-import org.streamreasoning.rsp4j.io.DataStreamImpl;
 import org.streamreasoning.rsp4j.yasper.querying.operators.windowing.WindowNodeImpl;
 
 
@@ -137,6 +133,11 @@ public class SeraphQL implements ContinuousQuery {
         return null;
     }
 
+@Override
+    public String getR2R(){
+        return r2r.toString();
+    }
+
     @Override
     public StreamToRelationOp[] s2r() {
         return new StreamToRelationOp[0];
@@ -150,6 +151,11 @@ public class SeraphQL implements ContinuousQuery {
     @Override
     public List<Aggregation> getAggregations() {
         return null;
+    }
+
+    @Override
+    public List<String> getResultVars(){
+        return Arrays.asList(new String[]{"name"});
     }
 
 }

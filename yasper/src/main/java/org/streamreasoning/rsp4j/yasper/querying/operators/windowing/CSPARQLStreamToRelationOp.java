@@ -2,10 +2,12 @@ package org.streamreasoning.rsp4j.yasper.querying.operators.windowing;
 
 import org.apache.commons.rdf.api.IRI;
 import org.apache.log4j.Logger;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.streamreasoning.rsp4j.api.enums.ReportGrain;
 import org.streamreasoning.rsp4j.api.enums.Tick;
 import org.streamreasoning.rsp4j.api.exceptions.OutOfOrderElementException;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.ObservableStreamToRelationOp;
+import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.StreamToRelationOp;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.instance.Window;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.instance.WindowImpl;
 import org.streamreasoning.rsp4j.api.querying.ContinuousQueryExecution;
@@ -103,6 +105,12 @@ public class CSPARQLStreamToRelationOp<I, W> extends ObservableStreamToRelationO
         to_evict.clear();
     }
 
+    @Override
+    public StreamToRelationOp<I, W> link(ContinuousQueryExecution<I, W, ?, ?> context, GraphDatabaseService db) {
+        return null;
+    }
+
+
     private void scope(long t_e) {
         long c_sup = (long) Math.ceil(((double) Math.abs(t_e - t0) / (double) slide)) * slide;
         long o_i = c_sup - width;
@@ -136,7 +144,7 @@ public class CSPARQLStreamToRelationOp<I, W> extends ObservableStreamToRelationO
     }
 
     @Override
-    public CSPARQLStreamToRelationOp<I, W> link(ContinuousQueryExecution<I, W, ?, ?> context) {
+    public CSPARQLStreamToRelationOp<I, W> link(ContinuousQueryExecution context) {
         this.addObserver((Observer) context);
         return this;
     }

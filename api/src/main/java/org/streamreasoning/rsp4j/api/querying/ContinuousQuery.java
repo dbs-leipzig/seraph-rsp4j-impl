@@ -56,6 +56,8 @@ public interface ContinuousQuery<I, W, R, O> {//extends Task<I, Binding, O> {
 
     RelationToRelationOperator<W, R> r2r();
 
+    String getR2R();
+
     StreamToRelationOp<I, W>[] s2r();
 
     RelationToStreamOperator<R, O> r2s();
@@ -69,4 +71,6 @@ public interface ContinuousQuery<I, W, R, O> {//extends Task<I, Binding, O> {
     default List<Var> getProjections(){return Collections.emptyList();}
 
    List<String> getInputStreams();
+
+    List<String> getResultVars();
 }

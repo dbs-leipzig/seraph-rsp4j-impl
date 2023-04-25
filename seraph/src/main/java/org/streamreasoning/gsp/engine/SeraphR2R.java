@@ -39,7 +39,7 @@ public class SeraphR2R implements RelationToRelationOperator<PGraph, Map<String,
         this.sds = sds;
         this.baseURI = baseURI;
         //TODO check if correct: changed getResultVars to
-        resultVars = query.getAggregations();
+        resultVars = query.getResultVars();
 
     }
 
@@ -47,13 +47,18 @@ public class SeraphR2R implements RelationToRelationOperator<PGraph, Map<String,
     //todo add timestamp
     @Override
     public Stream<Map<String, Object>> eval(Stream<PGraph> sds) {
+        //ToDo remove println
+        System.out.println("R2R eval TEST");
+
         //TODO fix up to stream
+
+
         Long ts = System.currentTimeMillis();
         String id = baseURI + "result;" + ts;
         this.tx = db.beginTx();
 
         //execute the cypher query
-        Result result = tx.execute(query.r2r().toString());
+        Result result = tx.execute(query.getR2R());
 //        |--name-|--age--|-email--|
 //        |--Fred--|--22--|--null--|
 //        |--Riccardo--|--29--|--null--|
@@ -77,6 +82,9 @@ public class SeraphR2R implements RelationToRelationOperator<PGraph, Map<String,
 
     @Override
     public TimeVarying<Collection<Map<String, Object>>> apply(SDS<PGraph> sds) {
+        //ToDo remove println
+        System.out.println("R2R apply TEST");
+
         return null;
     }
 

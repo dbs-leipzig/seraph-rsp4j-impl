@@ -25,7 +25,7 @@ public class Neo4jContinuousQueryExecutionImpl<I, W, R, O> extends Neo4jContinuo
     new: */
     private final RelationToStreamOperator<R, O> r2s;
     private final RelationToRelationOperator<W, R> r2r;
-    private final SDS<W> sds;
+    private final SDS sds;
     private  final ContinuousQuery query;
     private final DataStream<O> out;
     private List<StreamToRelationOp<I, W>> s2rs;
@@ -36,7 +36,7 @@ public class Neo4jContinuousQueryExecutionImpl<I, W, R, O> extends Neo4jContinuo
 
     public Neo4jContinuousQueryExecutionImpl(SDS sds, ContinuousQuery query, DataStream<O> outstream, List<DataStream<PGraph>> instreams, RelationToRelationOperator<W, R>r2r, RelationToStreamOperator<R,O> r2s, StreamToRelationOp<I,W>... s2rs) {
         super(sds, query);
-        this.s2rs = Arrays.asList(s2rs);
+        this.s2rs = s2rs == null ? new ArrayList<>() : Arrays.asList(s2rs);
         this.query = query;
         this.sds = sds;
         this.r2r = r2r;
@@ -73,7 +73,6 @@ public class Neo4jContinuousQueryExecutionImpl<I, W, R, O> extends Neo4jContinuo
 
     @Override
     public StreamToRelationOp<I, W>[] s2rs() {
-        System.out.println("TEST NEO4J s2rs");
         StreamToRelationOp<I, W>[] a = new StreamToRelationOp[s2rs.size()];
         return s2rs.toArray(a);
     }
@@ -90,7 +89,7 @@ public class Neo4jContinuousQueryExecutionImpl<I, W, R, O> extends Neo4jContinuo
 
     @Override
     public void add(StreamToRelationOp<I, W> op) {
-        op.link(this);
+        op.link(this, null);
     }
 
     @Override
@@ -98,6 +97,8 @@ public class Neo4jContinuousQueryExecutionImpl<I, W, R, O> extends Neo4jContinuo
         Long now = (Long) arg;
         r2s.eval(eval(now), now).forEach(o1 -> outstream().put(o1, now));
         System.out.println("TEST NEO4J UPDATE");
+
+
     }
 
     @Override

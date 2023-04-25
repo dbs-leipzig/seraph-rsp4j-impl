@@ -1,6 +1,7 @@
 package org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner;
 
 
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.streamreasoning.rsp4j.api.enums.ReportGrain;
 import org.streamreasoning.rsp4j.api.enums.Tick;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.instance.Window;
@@ -41,6 +42,8 @@ public interface StreamToRelationOp<I, W> extends Consumer<I> {
     }
 
     Content<I, W> compute(long t_e, Window w);
+
+    StreamToRelationOp<I, W> link(ContinuousQueryExecution<I, W, ?, ?> context, GraphDatabaseService db);
 
     StreamToRelationOp<I, W> link(ContinuousQueryExecution<I, W, ?, ?> context);
 

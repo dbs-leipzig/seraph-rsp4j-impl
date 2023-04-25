@@ -2,6 +2,7 @@ package org.streamreasoning.rsp4j.yasper.querying.operators.windowing;
 
 import org.apache.commons.rdf.api.IRI;
 import org.apache.log4j.Logger;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.streamreasoning.rsp4j.api.enums.ReportGrain;
 import org.streamreasoning.rsp4j.api.enums.Tick;
 import org.streamreasoning.rsp4j.api.exceptions.OutOfOrderElementException;
@@ -114,6 +115,13 @@ public class CQELSStreamToRelationOp<T1, T2> extends ObservableStreamToRelationO
         to_evict.clear();
     }
 
+    @Override
+    public StreamToRelationOp<T1, T2> link(ContinuousQueryExecution<T1, T2, ?, ?> context, GraphDatabaseService db) {
+        return null;
+    }
+
+
+
     private Window scope(long t_e) {
         long o_i = t_e - a;
         log.debug("Calculating the Windows to Open. First one opens at [" + o_i + "] and closes at [" + t_e + "]");
@@ -135,10 +143,12 @@ public class CQELSStreamToRelationOp<T1, T2> extends ObservableStreamToRelationO
     }
 
     @Override
-    public StreamToRelationOp<T1, T2> link(ContinuousQueryExecution<T1, T2, ?, ?> context) {
+    public StreamToRelationOp<T1, T2> link(ContinuousQueryExecution context) {
         this.addObserver((Observer) context);
         return this;
     }
+
+
 
 
     @Override

@@ -5,6 +5,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.test.TestDatabaseManagementServiceBuilder;
 import org.streamreasoning.gsp.data.PGStream;
 import org.streamreasoning.gsp.data.PGraph;
+import org.streamreasoning.gsp.engine.windowing.SeraphTimeWindowOperatorFactory;
 import org.streamreasoning.rsp4j.api.engine.config.EngineConfiguration;
 import org.streamreasoning.rsp4j.api.engine.features.QueryRegistrationFeature;
 import org.streamreasoning.rsp4j.api.engine.features.StreamRegistrationFeature;
@@ -12,8 +13,8 @@ import org.streamreasoning.rsp4j.api.enums.ReportGrain;
 import org.streamreasoning.rsp4j.api.enums.Tick;
 import org.streamreasoning.rsp4j.api.format.QueryResultFormatter;
 import org.streamreasoning.rsp4j.api.operators.r2r.RelationToRelationOperator;
-import org.streamreasoning.rsp4j.api.operators.r2s.RelationToStreamOperator;
 import org.streamreasoning.rsp4j.api.operators.s2r.StreamToRelationOperatorFactory;
+import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.Consumer;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.StreamToRelationOp;
 import org.streamreasoning.rsp4j.api.operators.s2r.syntax.WindowNode;
 import org.streamreasoning.rsp4j.api.querying.ContinuousQuery;
@@ -25,6 +26,7 @@ import org.streamreasoning.rsp4j.api.secret.report.Report;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
 import org.streamreasoning.rsp4j.api.secret.time.TimeImpl;
 import org.streamreasoning.rsp4j.api.stream.data.DataStream;
+import org.stringtemplate.v4.ST;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -79,9 +81,9 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
         this.time = new TimeImpl(0);
 
         cf = new PGraphContentFactory(db);
-        Class<?> aClass = Class.forName(rsp_config.getString(S2RFactory));
+        Class<?> aClass = Class.forName("org.streamreasoning.gsp.engine.windowing.SeraphTimeWindowOperatorFactory");
 
-        this.wf = (StreamToRelationOperatorFactory<PGraph, PGraph>) aClass
+        this.wf = (SeraphTimeWindowOperatorFactory<PGraph, PGraph>) aClass
                 .getConstructor(
                         Time.class,
                         Tick.class,
@@ -99,18 +101,38 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
 
 
     @Override
-    public  ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, SeraphBinding> register(ContinuousQuery q){
+    public  ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, Map<String, Object>> register(ContinuousQuery q){
 
         //ToDo check if SDSImpl needs to be changed -> probably not
         //create new streaming data set by using the neo4j database as sds
         SDS<PGraph> sds = new SeraphSDSImpl(db);
 
         //create output stream
-        DataStream<SeraphBinding> out = new SeraphStreamImpl<SeraphBinding>(q.getID());
+        //DataStream<SeraphBinding> out = new SeraphStreamImpl<SeraphBinding>(q.getID());
 
 
+        DataStream<Map<String, Object>> out = new SeraphStreamImpl<Map<String, Object>>(q.getID()) {
 
+            List<Consumer<Map<String, Object>>> consumers = new ArrayList<Consumer<Map<String, Object>>>();
+            String uri = "out"; // q.getOutputStream().uri();
 
+            @Override
+            public void addConsumer(Consumer<Map<String, Object>> c) {
+                consumers.add(c);
+            }
+
+            @Override
+            public void put(Map<String, Object> e, long ts) {
+                consumers.forEach(mapConsumer -> {
+                    mapConsumer.notify((Map<String, Object>) e, ts);
+                });
+            }
+
+            @Override
+            public String uri() {
+                return uri;
+            }
+        };
 
         //register all the input streams declared in the query
         List<DataStream<PGraph>> in = new ArrayList<>();
@@ -122,13 +144,17 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
         SeraphRStream r2s = new SeraphRStream();
         RelationToRelationOperator<PGraph, Map<String, Object>> r2r =  new SeraphR2R(q, sds, q.getID(), db);
 
-        ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, SeraphBinding> cqe = new Neo4jContinuousQueryExecutionImpl<PGraph,PGraph,Map<String, Object>,SeraphBinding>(sds, q, out, in, r2r,r2s);
+//        ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, SeraphBinding> cqe = new Neo4jContinuousQueryExecutionImpl<PGraph,PGraph,Map<String, Object>,SeraphBinding>(sds, q, out, in, r2r,r2s);
+
+        ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, Map<String, Object>> cqe = new Neo4jContinuousQueryExecutionImpl<PGraph,PGraph,Map<String, Object>,Map<String, Object>>(sds, q, out, in, r2r,r2s);
 
         Map<? extends WindowNode, PGStream> windowMap = q.getWindowMap();
 
-        windowMap.forEach((WindowNode wo, DataStream s) -> {
 
-            //ToDo Fix Set.contains function -> return false atm even though the registeredStreams Set contains a stream with the values of s
+        //ToDo change wop.apply to apply the PGStream out of the in-array/registeredStreams and not the one out of the window map
+
+        windowMap.forEach((WindowNode wo, PGStream s) -> {
+
             if (registeredStreams.contains(s)) {
 
 
@@ -136,8 +162,9 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
                 //TODO switch to parametric method WindowNode.params() for the simple ones
                 //TODO for the BGP aware windows, we need to extract bgp from R2R and push them to the window, therefore we need a way to visualize the r2r tree
                 StreamToRelationOp<PGraph, PGraph> build = wf.build(wo.getRange(), wo.getStep(), wo.getT0());
-                StreamToRelationOp<PGraph, PGraph> wop = build.link(cqe);
-                TimeVarying<PGraph> tvg = wop.apply(s);
+                StreamToRelationOp<PGraph, PGraph> wop = build.link(cqe, db);
+                TimeVarying<PGraph> tvg = wop.apply(registeredStreams.iterator().next());
+                //TimeVarying<PGraph> tvg = wop.apply(s);
                 if (wo.named()) {
                     if (wo.named()) {
                         sds.add(createIRI(wo.iri()), tvg);
