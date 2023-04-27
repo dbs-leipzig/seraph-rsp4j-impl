@@ -64,10 +64,6 @@ public class CeraphExample {
                 "FROM STREAM  <http://stream1> STARTING FROM LATEST\n" +
                 "WITH WINDOW RANGE PT10S\n" +
                 "MATCH (b1:Bike)-[r1:rentedAt]->(s:Station)\n" +
-                //"(b1)-[n1:returnedAt]->(p:Station), \n" +
-                //"(b2:Bike)-[r2:rentedAt]->(p), " +
-                //"(b2)-[n2:returnedAt]->(o:Station)\n" +
-                //"WHERE r1.user_id = 5678.0\n" +
                 "RETURN r1.user_id\n" +
                 "EMIT ON ENTERING EVERY PT5S " +
                 "INTO <http://stream2> }\n");
