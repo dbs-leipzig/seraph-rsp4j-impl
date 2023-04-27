@@ -65,8 +65,8 @@ public class CeraphExample {
                 "REGISTER <kafka://example> {\n" +
                 "FROM STREAM  <http://stream1> STARTING FROM LATEST\n" +
                 "WITH WINDOW RANGE PT10S\n" +
-                "MATCH (n:Person)-[p]->(n1:Person)\n" +
-                "RETURN *\n" +
+                "MATCH (b1:Bike)-[r1:rentedAt]->(s:Station)\n" +
+                "RETURN r1.user_id\n" +
                 "EMIT SNAPSHOT EVERY PT5S " +
                 "INTO <http://stream2> }\n");
 
