@@ -63,7 +63,7 @@ public class RSPQLVisitorImpl extends RSPQLBaseVisitor {
     }
 
     /**
-     * Visit window definition clauses. For now we support only  logical windows
+     * Visit window definition clauses. For now, we support only  logical windows
      *
      * @param ctx
      * @return
