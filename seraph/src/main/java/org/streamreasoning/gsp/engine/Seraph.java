@@ -66,6 +66,7 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
 
     StreamToRelationOperatorFactory<PGraph, PGraph> wf;
 
+    //create new engine and load config
     public Seraph(EngineConfiguration rsp_config) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         this.rsp_config = rsp_config;
         this.report = rsp_config.getReport();
@@ -73,6 +74,7 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
         this.report_grain = rsp_config.getReportGrain();
         this.tick = rsp_config.getTick();
         this.t0 = rsp_config.gett0();
+        //ToDo Issue #8
         this.windowOperatorFactory = rsp_config.getString(S2RFactory);
         this.assignedSDS = new HashMap<>();
         this.registeredQueries = new HashMap<>();
@@ -81,7 +83,9 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
         this.queryExecutions = new HashMap<>();
         this.time = new TimeImpl(0);
 
+        //create a new config factory
         cf = new PGraphContentFactory(db);
+        //ToDo Issue #8
         Class<?> aClass = Class.forName("org.streamreasoning.gsp.engine.windowing.SeraphTimeWindowOperatorFactory");
 
         this.wf = (SeraphTimeWindowOperatorFactory<PGraph, PGraph>) aClass
@@ -101,18 +105,19 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
     }
 
 
+    //register a query to the engine
     @Override
-    public  ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, Map<String, Object>> register(ContinuousQuery q){
+    public  ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, Map<String, Object>> register(ContinuousQuery q) {
 
 
         //create new streaming data set by using the neo4j database as sds
         SDS<PGraph> sds = new SeraphSDSImpl(db);
 
         //create output stream
-        //DataStream<SeraphBinding> out = new SeraphStreamImpl<SeraphBinding>(q.getID());
         DataStream<Map<String, Object>> out = new SeraphStreamImpl<Map<String, Object>>(q.getID()) {
 
             List<Consumer<Map<String, Object>>> consumers = new ArrayList<Consumer<Map<String, Object>>>();
+            //ToDo check if uri can be changed to getOutputStream() of ContinuousQuery q
             String uri = "out"; // q.getOutputStream().uri();
 
             @Override
@@ -141,27 +146,27 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
         });
 
         SeraphRStream r2s = new SeraphRStream();
-        RelationToRelationOperator<PGraph, Map<String, Object>> r2r =  new SeraphR2R(q, sds, q.getID(), db);
+        RelationToRelationOperator<PGraph, Map<String, Object>> r2r = new SeraphR2R(q, sds, q.getID(), db);
 
 //        ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, SeraphBinding> cqe = new Neo4jContinuousQueryExecutionImpl<PGraph,PGraph,Map<String, Object>,SeraphBinding>(sds, q, out, in, r2r,r2s);
 
-        ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, Map<String, Object>> cqe = new Neo4jContinuousQueryExecutionImpl<PGraph,PGraph,Map<String, Object>,Map<String, Object>>(sds, q, out, in, r2r,r2s);
+        ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, Map<String, Object>> cqe = new Neo4jContinuousQueryExecutionImpl<PGraph, PGraph, Map<String, Object>, Map<String, Object>>(sds, q, out, in, r2r, r2s);
 
         Map<? extends WindowNode, PGStream> windowMap = q.getWindowMap();
 
         windowMap.forEach((WindowNode wo, PGStream s) -> {
 
             //check if stream is registered
+            //ToDo check wether if clause is redundant and build and wop can be moved into the filter for loop
             if (registeredStreams.contains(s)) {
 
                 //TODO switch to parametric method WindowNode.params() for the simple ones
                 //TODO for the BGP aware windows, we need to extract bgp from R2R and push them to the window, therefore we need a way to visualize the r2r tree
-
-                //old implementation: a = getRange; b = getStep
                 StreamToRelationOp<PGraph, PGraph> build = wf.build(wo.getRange(), wo.getStep(), wo.getT0());
                 StreamToRelationOp<PGraph, PGraph> wop = build.link(cqe, db);
 
-                in.stream().filter(stream-> stream.getName().equals(s.getName())).forEach(stream -> {
+                //check if s (stream out of the windowmap) equals to an input stream, if yes, apply a tvg and add it to a sds
+                in.stream().filter(stream -> stream.getName().equals(s.getName())).forEach(stream -> {
                     TimeVarying<PGraph> tvg = wop.apply(stream);
                     if (wo.named()) {
                         if (wo.named()) {
@@ -175,237 +180,12 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
         });
 
         return cqe;
-/*
-        //STREAM DECLARATION
-        //register all the input streams declared in the query
-        List<DataStream<PGraph>> in = new ArrayList<>();
-        q.getInputStreams().forEach(s -> {
-            PGStream register = this.register(new PGStream(s));
-            in.add(register);
-        });
-
-        //empty stream
-        DataStream stream = q.getOutputStream();
-
-        //create a new output stream
-        DataStream<Map<String, Object>> out = new DataStream<Map<String, Object>>() {
-
-            List<Consumer<Map<String, Object>>> consumers = new ArrayList<>();
-            String uri = "out"; // q.getOutputStream().uri();
-
-            @Override
-            public void addConsumer(Consumer<Map<String, Object>> c) {
-                consumers.add(c);
-            }
-
-            @Override
-            public void put(Map<String, Object> e, long ts) {
-                consumers.forEach(mapConsumer -> {
-                    mapConsumer.notify(e, ts);
-                });
-            }
-
-            @Override
-            public String uri() {
-                return uri;
-            }
-        };
-
-        //use the neo4j database as a streaming data set
-        SDS sds = new SeraphSDSImpl(db);
-
-        //register the operator, which will execute the cypher query on each eval timestamp
-        RelationToRelationOperator<Map<String, Object>> r2r = new SeraphR2R(q, sds, "", db);
-
-        //create a new report which defines, when the contents of the stream will become visible for the query
-        Report r = new ReportImpl();
-
-        //define the strategy for the report: contents become visible for evaluation when the sliding window closes
-        r.add(new OnWindowClose());
-
-        Time time = q.getTime();
-
-        RelationToStreamOperator<Map<String, Object>> r2s = new SeraphRStream();
-
-        //changed from neo4jqexec to execImpl
-        Neo4jContinuousQueryExecutionImpl cqe = new Neo4jContinuousQueryExecutionImpl(
-                out,
-                in,
-                q,
-                sds,
-                new SeraphR2R(q, sds, q.getID(), db),
-                r2s);
-
-
-        q.getWindowMap().forEach((windowNode, webStream) -> {
-
-            SeraphTimeWindowOperatorFactory wo = new SeraphTimeWindowOperatorFactory(windowNode.getRange(), windowNode.getStep(), time, Tick.TIME_DRIVEN, r, ReportGrain.SINGLE, cqe, db);
-
-            in.stream().filter(s-> {
-
-                return s.uri().equals(webStream.uri());
-
-            }).forEach(s -> {
-
-                TimeVarying<PGraph> t = wo.apply(s, RDFUtils.createIRI(s.uri()));
-
-                //add time varying graph to the streaming data set (graph data base)
-                sds.add(t);
-
-
-            });
-        });*/
-
-
     }
 
-    /*
-    @Override
-    public ContinuousQueryExecution<PGraph, PGraph, SeraphBinding, SeraphBinding> register(ContinuousQuery q) {
-//        return new ContinuousQueryExecutionFactoryImpl(q, windowOperatorFactory, registeredStreams, report, report_grain, tick, t0).build();
-
-
-        //STREAM DECLARATION
-        //register all the input streams declared in the query
-        List<DataStream<PGraph>> in = new ArrayList<>();
-        q.getInputStreams().forEach(s -> {
-            PGStream register = this.register(new PGStream(s));
-            in.add(register);
-        });
-
-        //empty stream
-        DataStream stream = q.getOutputStream();
-
-        //create a new output stream
-        DataStream<Map<String, Object>> out = new DataStream<Map<String, Object>>() {
-
-            List<Consumer<Map<String, Object>>> consumers = new ArrayList<>();
-            String uri = "out"; // q.getOutputStream().uri();
-
-            @Override
-            public void addConsumer(Consumer<Map<String, Object>> c) {
-                consumers.add(c);
-            }
-
-            @Override
-            public void put(Map<String, Object> e, long ts) {
-                consumers.forEach(mapConsumer -> {
-                    mapConsumer.notify(e, ts);
-                });
-            }
-
-            @Override
-            public String uri() {
-                return uri;
-            }
-        };
-
-        //use the neo4j database as a streaming data set
-        SDS sds = new SeraphSDSImpl(db);
-
-        //register the operator, which will execute the cypher query on each eval timestamp
-        RelationToRelationOperator<Map<String, Object>> r2r = new SeraphR2R(q, sds, "", db);
-
-        //create a new report which defines, when the contents of the stream will become visible for the query
-        Report r = new ReportImpl();
-
-        //define the strategy for the report: contents become visible for evaluation when the sliding window closes
-        r.add(new OnWindowClose());
-
-        Time time = q.getTime();
-
-        RelationToStreamOperator<Map<String, Object>> r2s = new SeraphRStream();
-
-        //changed from neo4jqexec to execImpl
-        Neo4jContinuousQueryExecutionImpl cqe = new Neo4jContinuousQueryExecutionImpl(
-                out,
-                in,
-                q,
-                sds,
-                new SeraphR2R(q, sds, q.getID(), db),
-                r2s);
-
-
-        q.getWindowMap().forEach((windowNode, webStream) -> {
-
-            SeraphTimeWindowOperatorFactory wo = new SeraphTimeWindowOperatorFactory(windowNode.getRange(), windowNode.getStep(), time, Tick.TIME_DRIVEN, r, ReportGrain.SINGLE, cqe, db);
-
-            in.stream().filter(s-> {
-
-               return s.uri().equals(webStream.uri());
-
-            }).forEach(s -> {
-
-                TimeVarying<PGraph> t = wo.apply(s, RDFUtils.createIRI(s.uri()));
-
-                //add time varying graph to the streaming data set (graph data base)
-                sds.add(t);
-
-
-            });
-        });
-
-
-
-
-//        q.getWindowMap().forEach((WindowNode wo, WebStream s) -> {
-//            try {
-//                StreamToRelationOperatorFactory<PGraph, PGraph> w;
-//                IRI iri = RDFUtils.createIRI(wo.iri());
-//
-//                Class<?> aClass = Class.forName(windowOperatorFactory);
-//                w = (StreamToRelationOperatorFactory<PGraph, PGraph>) aClass
-//                        .getConstructor(long.class,
-//                                long.class,
-//                                long.class,
-//                                Time.class,
-//                                Tick.class,
-//                                Report.class,
-//                                ReportGrain.class,
-//                                ContinuousQueryExecution.class)
-//                        .newInstance(wo.getRange(),
-//                                wo.getStep(),
-//                                wo.getT0(),
-//                                q.getTime(),
-//                                tick,
-//                                report,
-//                                report_grain,
-//                                cqe);
-
-//            if (wo.getStep() == -1) {
-//                w = new
-//                (wo.getRange(), wo.getT0(), query.getTime(), tick, report, reportGrain, cqe);
-//            } else
-//                w = new CSPARQLTimeWindowOperatorFactory(wo.getRange(), wo.getStep(), wo.getT0(), query.getTime(), tick, report, reportGrain, cqe);
-//
-//                TimeVarying<PGraph> tvg = w.apply(registeredStreams.get(s.uri()), iri);
-//
-//                if (wo.named()) {
-//                    sds.add(iri, tvg);
-//                } else {
-//                    sds.add(tvg);
-//                }
-//
-//            } catch (InstantiationException e) {
-//                e.printStackTrace();
-//            } catch (IllegalAccessException e) {
-//                e.printStackTrace();
-//            } catch (InvocationTargetException e) {
-//                e.printStackTrace();
-//            } catch (NoSuchMethodException e) {
-//                e.printStackTrace();
-//            } catch (ClassNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//        });
-        return cqe;
-    }
-*/
+    //add property graph stream s to the registered streams
     @Override
     public PGStream register(PGStream s) {
         registeredStreams.add(s);
-        //old
-        //registeredStreams.put(s.uri(), s);
         return s;
     }
 

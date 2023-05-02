@@ -22,7 +22,7 @@ public class Neo4jContinuousQueryExecutionImpl<I, W, R, O> extends Neo4jContinuo
     private final RelationToStreamOperator<R, O> r2s;
     private final RelationToRelationOperator<W, R> r2r;
     private final SDS sds;
-    private  final ContinuousQuery query;
+    private  final ContinuousQuery<I, W, R, O> query;
     private final DataStream<O> out;
     private List<StreamToRelationOp<I, W>> s2rs;
 
@@ -30,7 +30,7 @@ public class Neo4jContinuousQueryExecutionImpl<I, W, R, O> extends Neo4jContinuo
 
 
 
-    public Neo4jContinuousQueryExecutionImpl(SDS sds, ContinuousQuery query, DataStream<O> outstream, List<DataStream<PGraph>> instreams, RelationToRelationOperator<W, R>r2r, RelationToStreamOperator<R,O> r2s, StreamToRelationOp<I,W>... s2rs) {
+    public Neo4jContinuousQueryExecutionImpl(SDS sds, ContinuousQuery<I, W, R, O> query, DataStream<O> outstream, List<DataStream<PGraph>> instreams, RelationToRelationOperator<W, R>r2r, RelationToStreamOperator<R,O> r2s, StreamToRelationOp<I,W>... s2rs) {
         super(sds, query);
         this.s2rs = s2rs == null ? new ArrayList<>() : Arrays.asList(s2rs);
         this.query = query;

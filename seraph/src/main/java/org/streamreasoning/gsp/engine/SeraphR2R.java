@@ -54,7 +54,7 @@ public class SeraphR2R implements RelationToRelationOperator<PGraph, Map<String,
         String id = baseURI + "result;" + ts;
         this.tx = db.beginTx();
 
-        //execute the cypher query
+        //execute the cypher query which is stored in the r2r parameter of the query
         Result result = tx.execute(query.getR2R());
 //        |--name-|--age--|-email--|
 //        |--Fred--|--22--|--null--|
