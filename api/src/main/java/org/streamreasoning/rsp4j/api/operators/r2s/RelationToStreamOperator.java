@@ -16,7 +16,6 @@ public interface RelationToStreamOperator<R, O> {
     }
 
     default Stream<O> eval(Stream<R> sml, long ts) {
-        System.out.println("R2S eval TEST");
         return sml.map(e -> transform(e, ts));
     }
 

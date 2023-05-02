@@ -45,8 +45,6 @@ public abstract class ObservableStreamToRelationOp<E, O> extends Observable impl
 
     @Override
     public void notify(E arg, long ts) {
-        //ToDo remove println
-        System.out.println("ObservableStreamToRelationOp notify test");
         windowing(arg, ts);
     }
 

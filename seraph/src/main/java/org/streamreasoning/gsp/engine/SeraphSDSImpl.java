@@ -61,7 +61,6 @@ final public class SeraphSDSImpl implements SDS<PGraph> {
 
     @Override
     public SDS<PGraph> materialize(long ts) {
-        System.out.println("SDS IMPL TEST");
         return SDS.super.materialize(ts);
     }
 

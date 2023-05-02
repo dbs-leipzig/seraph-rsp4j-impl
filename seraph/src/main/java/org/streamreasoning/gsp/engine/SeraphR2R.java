@@ -47,9 +47,6 @@ public class SeraphR2R implements RelationToRelationOperator<PGraph, Map<String,
     //todo add timestamp
     @Override
     public Stream<Map<String, Object>> eval(Stream<PGraph> sds) {
-        //ToDo remove println
-        System.out.println("R2R eval TEST");
-
         //TODO fix up to stream
 
 
@@ -82,9 +79,6 @@ public class SeraphR2R implements RelationToRelationOperator<PGraph, Map<String,
 
     @Override
     public TimeVarying<Collection<Map<String, Object>>> apply(SDS<PGraph> sds) {
-        //ToDo remove println
-        System.out.println("R2R apply TEST");
-
         return null;
     }
 

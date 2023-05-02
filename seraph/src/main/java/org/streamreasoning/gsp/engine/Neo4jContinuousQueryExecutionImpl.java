@@ -5,13 +5,9 @@ import org.streamreasoning.rsp4j.api.operators.r2r.RelationToRelationOperator;
 import org.streamreasoning.rsp4j.api.operators.r2s.RelationToStreamOperator;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.StreamToRelationOp;
 import org.streamreasoning.rsp4j.api.querying.ContinuousQuery;
-import org.streamreasoning.rsp4j.api.querying.result.SolutionMapping;
 import org.streamreasoning.rsp4j.api.sds.SDS;
 import org.streamreasoning.rsp4j.api.sds.timevarying.TimeVarying;
 import org.streamreasoning.rsp4j.api.stream.data.DataStream;
-import org.streamreasoning.rsp4j.io.DataStreamImpl;
-
-import javax.xml.crypto.Data;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -96,14 +92,11 @@ public class Neo4jContinuousQueryExecutionImpl<I, W, R, O> extends Neo4jContinuo
     public void update(Observable o, Object arg) {
         Long now = (Long) arg;
         r2s.eval(eval(now), now).forEach(o1 -> outstream().put(o1, now));
-        System.out.println("TEST NEO4J UPDATE");
-
 
     }
 
     @Override
     public Stream<R> eval(Long now) {
-        System.out.println("TEST NEO4J EVAL");
         sds.materialize(now);
         return r2r.eval(sds.toStream());
     }
