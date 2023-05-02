@@ -6,6 +6,7 @@ import org.neo4j.test.TestDatabaseManagementServiceBuilder;
 import org.streamreasoning.gsp.data.PGStream;
 import org.streamreasoning.gsp.data.PGraph;
 import org.streamreasoning.gsp.engine.windowing.SeraphTimeWindowOperatorFactory;
+import org.streamreasoning.rsp4j.api.RDFUtils;
 import org.streamreasoning.rsp4j.api.engine.config.EngineConfiguration;
 import org.streamreasoning.rsp4j.api.engine.features.QueryRegistrationFeature;
 import org.streamreasoning.rsp4j.api.engine.features.StreamRegistrationFeature;
@@ -103,14 +104,12 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
     @Override
     public  ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, Map<String, Object>> register(ContinuousQuery q){
 
-        //ToDo check if SDSImpl needs to be changed -> probably not
+
         //create new streaming data set by using the neo4j database as sds
         SDS<PGraph> sds = new SeraphSDSImpl(db);
 
         //create output stream
         //DataStream<SeraphBinding> out = new SeraphStreamImpl<SeraphBinding>(q.getID());
-
-
         DataStream<Map<String, Object>> out = new SeraphStreamImpl<Map<String, Object>>(q.getID()) {
 
             List<Consumer<Map<String, Object>>> consumers = new ArrayList<Consumer<Map<String, Object>>>();
@@ -150,32 +149,32 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
 
         Map<? extends WindowNode, PGStream> windowMap = q.getWindowMap();
 
-
-        //ToDo change wop.apply to apply the PGStream out of the in-array/registeredStreams and not the one out of the window map
-
         windowMap.forEach((WindowNode wo, PGStream s) -> {
 
+            //check if stream is registered
             if (registeredStreams.contains(s)) {
-
-
 
                 //TODO switch to parametric method WindowNode.params() for the simple ones
                 //TODO for the BGP aware windows, we need to extract bgp from R2R and push them to the window, therefore we need a way to visualize the r2r tree
+
+                //old implementation: a = getRange; b = getStep
                 StreamToRelationOp<PGraph, PGraph> build = wf.build(wo.getRange(), wo.getStep(), wo.getT0());
                 StreamToRelationOp<PGraph, PGraph> wop = build.link(cqe, db);
-                TimeVarying<PGraph> tvg = wop.apply(registeredStreams.iterator().next());
-                //TimeVarying<PGraph> tvg = wop.apply(s);
-                if (wo.named()) {
+
+                in.stream().filter(stream-> stream.getName().equals(s.getName())).forEach(stream -> {
+                    TimeVarying<PGraph> tvg = wop.apply(stream);
                     if (wo.named()) {
-                        sds.add(createIRI(wo.iri()), tvg);
-                    } else {
-                        sds.add(tvg);
+                        if (wo.named()) {
+                            sds.add(createIRI(wo.iri()), tvg);
+                        } else {
+                            sds.add(tvg);
+                        }
                     }
-                }
+                });
             }
         });
 
-
+        return cqe;
 /*
         //STREAM DECLARATION
         //register all the input streams declared in the query
@@ -257,7 +256,7 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
             });
         });*/
 
-        return cqe;
+
     }
 
     /*

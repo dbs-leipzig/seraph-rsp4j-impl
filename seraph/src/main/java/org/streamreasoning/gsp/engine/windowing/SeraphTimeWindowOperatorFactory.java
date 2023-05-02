@@ -19,7 +19,6 @@ public class SeraphTimeWindowOperatorFactory<P, P1> implements StreamToRelationO
    // private ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>> context;
     private final ContentFactory<PGraph, PGraph> cf;
 
-    //TODO add contentfactory cf -> csparqltimewindowoperatorfactory
     //new constructor
     public SeraphTimeWindowOperatorFactory(Time time, Tick tick, Report report, ReportGrain grain, ContentFactory<PGraph, PGraph> cf) {
 
@@ -55,7 +54,7 @@ public class SeraphTimeWindowOperatorFactory<P, P1> implements StreamToRelationO
 
     @Override
     public StreamToRelationOp<PGraph, PGraph> build(long a, long b, long t0) {
-        return  new SeraphStreamToRelationOp<>(null, a, time, tick, report, grain, cf);
+        return  new SeraphStreamToRelationOp<>(null, a,b, time, tick, report, grain, cf);
 
     }
 }

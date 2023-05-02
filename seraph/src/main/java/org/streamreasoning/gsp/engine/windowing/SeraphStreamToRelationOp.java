@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class SeraphStreamToRelationOp<T1, T2> extends ObservableStreamToRelationOp<T1, T2> {
 
-    private final long a;
+    private final long a, b;
     private static final Logger log = Logger.getLogger(SeraphStreamToRelationOp.class);
     private GraphDatabaseService db;
     private Map<Window, Content<T1, T2>> windows;
@@ -38,13 +38,11 @@ public class SeraphStreamToRelationOp<T1, T2> extends ObservableStreamToRelation
     private long tc0;
     private long toi;
 
-    Long b = 5000L;
 
-    //ToDo check if works: add content factory to constructor
-    public SeraphStreamToRelationOp(IRI iri, long a, Time instance, Tick tick, Report report, ReportGrain grain, ContentFactory<T1, T2> cf) {
-        //ToDo add content Factory to call of ObservableStreamToRelationOp
+    public SeraphStreamToRelationOp(IRI iri, long a, long b, Time instance, Tick tick, Report report, ReportGrain grain, ContentFactory<T1, T2> cf) {
         super(iri, instance, tick, report, grain, cf);
         this.a = a;
+        this.b = b;
         this.t0 = instance.getScope();
         this.toi = 0;
         this.windows = new HashMap<>();
@@ -56,18 +54,6 @@ public class SeraphStreamToRelationOp<T1, T2> extends ObservableStreamToRelation
         this.r_stream = new HashMap<>();
         this.d_stream = new HashMap<>();
     }
-
-    /*public SeraphStreamToRelationOp(IRI iri, long a, long b, Time instance, Tick tick, Report report, ReportGrain grain, GraphDatabaseService db) {
-        //ToDo add content Factory to call of ObservableStreamToRelationOp
-        super(iri, instance, tick, report, grain);
-        this.a = a;
-        this.b = b;
-        this.t0 = instance.getScope();
-        this.toi = 0;
-        this.windows = new HashMap<>();
-        this.to_evict = new HashSet<>();
-        this.db = db;
-    }*/
 
     @Override
     public Time time() {
@@ -93,31 +79,28 @@ public class SeraphStreamToRelationOp<T1, T2> extends ObservableStreamToRelation
                 .map(windows::get).collect(Collectors.toList());
     }
 
-    //ToDo: check if works: copied windowing function from CQELSStreamToRelationOP
     public void windowing(T1 e, long timestamp) {
 
-        long t_e = timestamp;
-
-        if (time.getAppTime() > t_e) {
+        if (time.getAppTime() > timestamp) {
             throw new OutOfOrderElementException("(" + e + "," + timestamp + ")");
         }
 
-        scope(t_e);
+        scope(timestamp);
 
         //todo what if scope returns the active window?
         windows.keySet().forEach(
                 scope -> {
-                    if (scope.getO() <= t_e && t_e < scope.getC()) {
+                    if (scope.getO() <= timestamp && timestamp < scope.getC()) {
                         windows.get(scope).add(e);
-                    } else if (t_e > scope.getC()) {
+                    } else if (timestamp > scope.getC()) {
                         schedule_for_eviction(scope);
                     }
                 });
 
         windows.keySet().stream()
-                .filter(w -> report.report(w, null, t_e, System.currentTimeMillis()))
+                .filter(w -> report.report(w, null, timestamp, System.currentTimeMillis()))
                 .max(Comparator.comparingLong(Window::getC))
-                .ifPresent(window -> ticker.tick(t_e, window));
+                .ifPresent(window -> ticker.tick(timestamp, window));
 
         to_evict.forEach(w -> {
             windows.remove(w);
@@ -127,54 +110,7 @@ public class SeraphStreamToRelationOp<T1, T2> extends ObservableStreamToRelation
 
         to_evict.clear();
     }
-     
-    /*public void windowing(T1 e, long ts) {
-       //ToDo remove println
-        System.out.println("SS2ROP windowing TEST");
-        log.debug("Received element (" + e + "," + ts + ")");
-        long t_e = ts;
 
-        if (time.getAppTime() > t_e) {
-            log.error("OUT OF ORDER NOT HANDLED");
-            throw new OutOfOrderElementException("(" + e + "," + ts + ")");
-        }
-
-        Window active = scope(t_e);
-        Content<T1, T2> content = windows.get(active);
-
-        r_stream.entrySet().stream().filter(ee -> ee.getValue() < active.getO()).forEach(ee -> d_stream.put(ee.getKey(), ee.getValue()));
-
-        r_stream.entrySet().stream().filter(ee -> ee.getValue() >= active.getO()).map(Map.Entry::getKey).forEach(content::add);
-
-        r_stream.put(e, ts);
-        content.add(e);
-
-        if (report.report(active, content, t_e, System.currentTimeMillis())) {
-            ticker.tick(t_e, active);
-        }
-
-
-        //REMOVE ALL THE WINDOWS THAT CONTAIN DSTREAM ELEMENTS
-        //Theoretically active window has always size 1
-        d_stream.entrySet().forEach(ee -> {
-            log.debug("Evicting [" + ee + "]");
-
-            windows.forEach((window, content1) -> {
-                if (window.getO() <= ee.getValue() && window.getC() < ee.getValue())
-                    schedule_for_eviction(window);
-
-            });
-
-            r_stream.remove(ee);
-        });
-
-        to_evict.forEach(windows::remove);
-        to_evict.clear();
-    }
-    */
-    
-
-    //ToDo: check if works: copied scope function from CQELSStreamToRelationOP
     private void scope(long t_e) {
 
         long c_sup = (long) Math.ceil(((double) Math.abs(t_e - t0) / (double) b)) * b;
@@ -188,18 +124,6 @@ public class SeraphStreamToRelationOp<T1, T2> extends ObservableStreamToRelation
         } while (o_i <= t_e);
 
     }
-    /*
-    private Window scope(long t_e) {
-        long o_i = t_e - a;
-        log.debug("Calculating the Windows to Open. First one opens at [" + o_i + "] and closes at [" + t_e + "]");
-        log.debug("Computing Window [" + o_i + "," + (o_i + a) + ") if absent");
-
-        WindowImpl active = new WindowImpl(o_i, t_e);
-        windows.computeIfAbsent(active, window -> cf.create());
-        return active;
-    }*/
-
-
 
     private void schedule_for_eviction(Window w) {
         to_evict.add(w);

@@ -43,19 +43,13 @@ public class CeraphExample {
         ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, Map<String, Object>> cqe = sr.register(q);
 
         //Create a thread that creates the property graph stream for each stream registered in the ContinuousQueryExecution
-
-        //ToDo get instreams and create a thread for each
-
-
        Arrays.stream(cqe.instream()).forEach(s -> {
             new Thread(new Source(s)).start();
         });
 
 
         //add Consumer to the outstream that outputs the timestamp, key and value for each update of the output stream
-        //ToDo check if works: add a consumer for the outstream to output the results of the query
         //cqe.outstream().addConsumer((arg, ts) -> System.out.println(ts + "---> (" + arg + ")"));
-
         cqe.outstream().addConsumer((arg, ts) -> arg.forEach((k, v) -> System.out.println(ts + "---> (" + k + "," + v + ")")));
 
     }

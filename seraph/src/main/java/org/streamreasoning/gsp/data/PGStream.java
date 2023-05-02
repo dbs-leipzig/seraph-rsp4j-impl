@@ -27,9 +27,10 @@ public class PGStream implements DataStream<PGraph> {
         consumers.forEach(graphConsumer -> graphConsumer.notify(e, ts));
     }
 
+    //return stream_uri
     @Override
     public String getName() {
-        return null;
+        return stream_uri;
     }
 
     @Override

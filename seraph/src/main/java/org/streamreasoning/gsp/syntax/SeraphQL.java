@@ -103,7 +103,6 @@ public class SeraphQL implements ContinuousQuery {
     }
 
     @Override
-    //ToDo update getWindowMap function to work with DataStreams
     public Map<? extends WindowNode, PGStream> getWindowMap() {
         AtomicInteger i = new AtomicInteger();
         outputs.forEach((out, r2S) -> {
@@ -155,7 +154,7 @@ public class SeraphQL implements ContinuousQuery {
 
     @Override
     public List<String> getResultVars(){
-        return Arrays.asList(new String[]{"name"});
+        return List.of("name");
     }
 
 }
