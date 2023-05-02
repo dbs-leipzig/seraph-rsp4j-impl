@@ -1,0 +1,26 @@
+{
+  "timestamp" : 1,
+  "nodes" : [
+    {
+      "id" : 3,
+      "labels" : ["Station"],
+      "properties" : {}
+    },
+    {
+      "id" : 6,
+      "labels" : ["Bike"],
+      "properties" : {}
+    }
+  ],
+  "edges" : [
+    {
+      "from" : 6,
+      "to" : 3,
+      "labels" : ["returnedAt"],
+      "properties" : {
+        "user_id" : 1234,
+        "val_time" : 54780000
+      }
+    }
+  ]
+}

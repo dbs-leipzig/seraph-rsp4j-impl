@@ -23,18 +23,22 @@ public class Source implements Runnable {
             String topic = "sne-avro";
 //        AvroConsumer ac = new AvroConsumer(topic);
 
+            int count = 0;
+
             while (true) {
 //            ac.consume();
                 try {
+                    String fileName = "testGraph" + (count % 5 + 1) + ".json";
                     //Create a property graph using the test.json as a base
-                    URL url = Source.class.getClassLoader().getResource("test.json");
+                    URL url = Source.class.getClassLoader().getResource(fileName);
                     FileReader fileReader = new FileReader(url.getPath());
                     PGraph pGraph = PGraphImpl.fromJson(fileReader);
                     stream.put(pGraph, pGraph.timestamp());
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                Thread.sleep(4000);
+                Thread.sleep(5000);
+                count++;
             }
         } catch (
                 InterruptedException interruptedException) {
