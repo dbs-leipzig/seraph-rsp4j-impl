@@ -26,7 +26,7 @@ public class CeraphExample {
     public static void main(String[] args) throws ConfigurationException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
         //Load engine configuration from yasper/target/classes/csparql.properties
-        EngineConfiguration ec = EngineConfiguration.loadConfig("/csparql.properties");
+        EngineConfiguration ec = EngineConfiguration.loadConfig("/seraph.properties");
 
         //Create new seraph engine with the loaded configuration
         Seraph sr = new Seraph(ec);

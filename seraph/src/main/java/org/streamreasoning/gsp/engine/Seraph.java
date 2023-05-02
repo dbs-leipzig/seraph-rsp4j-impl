@@ -41,7 +41,7 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
     private final long t0;
     private final String baseUri;
     private final String windowOperatorFactory;
-    private final String S2RFactory = "yasper.window_operator_factory";
+    private final String S2RFactory = "seraph.window_operator_factory";
 
     private final Time time;
 
@@ -86,7 +86,7 @@ public class Seraph implements QueryRegistrationFeature<ContinuousQuery>, Stream
         //create a new config factory
         cf = new PGraphContentFactory(db);
         //ToDo Issue #8
-        Class<?> aClass = Class.forName("org.streamreasoning.gsp.engine.windowing.SeraphTimeWindowOperatorFactory");
+        Class<?> aClass = Class.forName(windowOperatorFactory);
 
         this.wf = (SeraphTimeWindowOperatorFactory<PGraph, PGraph>) aClass
                 .getConstructor(
