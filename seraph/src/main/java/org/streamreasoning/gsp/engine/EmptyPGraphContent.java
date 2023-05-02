@@ -2,6 +2,7 @@ package org.streamreasoning.gsp.engine;
 
 import org.streamreasoning.rsp4j.api.secret.content.Content;
 
+//create an empty PGraphContent
 public class EmptyPGraphContent<I, O> implements Content<I, O> {
 
     long ts = System.currentTimeMillis();

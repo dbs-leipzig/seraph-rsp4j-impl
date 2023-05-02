@@ -33,6 +33,7 @@ public class PGStream implements DataStream<PGraph> {
         return stream_uri;
     }
 
+    //added hashCode and equals functions to compare two PGStreams and check if they contain the same values
     @Override
     public int hashCode(){
         if (stream_uri != null) return stream_uri.hashCode();

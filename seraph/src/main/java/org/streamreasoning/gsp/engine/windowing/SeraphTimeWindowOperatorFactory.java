@@ -28,29 +28,6 @@ public class SeraphTimeWindowOperatorFactory<P, P1> implements StreamToRelationO
         this.grain = grain;
         this.cf = cf;
   }
-   /* public SeraphTimeWindowOperatorFactory(long a, long b, Time time, Tick tick, Report report, ReportGrain grain, ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>> context, GraphDatabaseService db) {
-        this.a = a;
-        this.b = b;
-        this.time = time;
-        this.tick = tick;
-        this.report = report;
-        this.grain = grain;
-        this.context = context;
-        this.db = db;
-    }*/
-
-
-
-
-/* old function -> no longer in use
-    @Override
-    public TimeVarying<PGraph> apply(WebDataStream<PGraph> s, IRI iri) {
-        StreamToRelationOp<PGraph, PGraph> windowStreamToRelationOp = new SeraphStreamToRelationOp(iri, a, b, time, tick, report, grain, db);
-        s.addConsumer(windowStreamToRelationOp);
-        context.add(windowStreamToRelationOp);
-        return windowStreamToRelationOp.get();
-    }
-*/
 
     @Override
     public StreamToRelationOp<PGraph, PGraph> build(long a, long b, long t0) {
