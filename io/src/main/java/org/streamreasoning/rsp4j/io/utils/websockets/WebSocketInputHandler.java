@@ -1,6 +1,7 @@
 package org.streamreasoning.rsp4j.io.utils.websockets;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.streamreasoning.rsp4j.api.stream.data.DataStream;
@@ -11,7 +12,7 @@ import java.io.IOException;
 
 @WebSocket
 public class WebSocketInputHandler<T> {
-    private static final Logger log = Logger.getLogger(WebSocketInputHandler.class);
+    private static final Logger log = LogManager.getLogger(WebSocketInputHandler.class);
     private final ParsingStrategy<T> parsingStrategy;
     private DataStream<T> stream;
 

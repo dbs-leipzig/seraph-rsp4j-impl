@@ -3,7 +3,8 @@ package org.streamreasoning.rsp4j.api.engine.config;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Iterator;
 
@@ -34,7 +35,7 @@ public class ConfigurationUtils {
     public static final String TICK = ENGINE + "tick";
 
     public static final String REPORT_GRAIN = ENGINE + "report_grain";
-    private static final Logger log = Logger.getLogger(ConfigurationUtils.class);
+    private static final Logger log = LogManager.getLogger(ConfigurationUtils.class);
 
 
 //    rspengine.tbox_location=/Users/riccardo/_Projects/RSP/RSP-Baselines/src/main/resources/arist.tbox.owl

@@ -1,6 +1,7 @@
 package org.streamreasoning.rsp4j.io.utils.websockets;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -15,7 +16,7 @@ import java.util.Map;
 @WebSocket
 public class WebSocketOutputHandler<T> {
 
-    private static final Logger log = Logger.getLogger(WebSocketOutputHandler.class);
+    private static final Logger log = LogManager.getLogger(WebSocketOutputHandler.class);
     private Map<Session, WebSocketRemoteConsumer<T>> sessionMap;
     private AbstractWebsocketSink<T> sink;
 

@@ -1,7 +1,7 @@
 package org.streamreasoning.rsp4j.io.sources;
 
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.streamreasoning.rsp4j.api.operators.s2r.execution.assigner.Consumer;
@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class WebsocketClientSource<T> implements DataStream<T> {
 
-    private static final Logger log = Logger.getLogger(WebsocketClientSource.class);
+    private static final Logger log = LogManager.getLogger(WebsocketClientSource.class);
     protected List<Consumer<T>> consumers = new ArrayList<>();
     protected String wsUrl;
     protected String stream_uri;

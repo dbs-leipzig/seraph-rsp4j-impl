@@ -1,7 +1,8 @@
 package org.streamreasoning.rsp4j.io.sinks;
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.streamreasoning.rsp4j.io.utils.serialization.StringSerializationStrategy;
@@ -19,7 +20,7 @@ import java.net.URI;
 public class WebsocketClientSink<T> extends AbstractWebsocketSink<T> {
 
 
-    private static final Logger log = Logger.getLogger(WebsocketClientSink.class);
+    private static final Logger log = LogManager.getLogger(WebsocketClientSink.class);
     protected String wsUrl;
 
     /**
