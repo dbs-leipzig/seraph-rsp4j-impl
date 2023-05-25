@@ -131,12 +131,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <arguments>
-                        <!-- Specify your grammar file(s) here -->
-                        <argument>path/to/YourGrammar.g4</argument>
-                    </arguments>
-                </configuration>
             </plugin>
 
             <plugin>
