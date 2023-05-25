@@ -19,6 +19,7 @@
       "labels" : ["rentedAt"],
       "properties" : {
         "user_id" : 1234,
+        "permitted" : "compliant",
         "val_time" : 52800000
       }
     }

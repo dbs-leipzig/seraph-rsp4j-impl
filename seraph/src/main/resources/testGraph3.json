@@ -19,6 +19,7 @@
       "labels" : ["returnedAt"],
       "properties" : {
         "user_id" : 1234,
+        "permitted" : "illegal",
         "val_time" : 54780000
       }
     }

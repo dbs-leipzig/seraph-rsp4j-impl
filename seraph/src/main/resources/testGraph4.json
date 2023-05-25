@@ -24,6 +24,7 @@
       "labels" : ["returnedAt"],
       "properties" : {
         "user_id" : 5678,
+        "permitted" : "compliant",
         "val_time" : 54900000
       }
     },
@@ -33,6 +34,7 @@
       "labels" : ["rentedAt"],
       "properties" : {
         "user_id" : 5678,
+        "permitted" : "compliant",
         "val_time" : 55080000
       }
     }
