@@ -85,7 +85,8 @@ IRIREF  : '<' ~( '<' | '>' | '"' | '{' | '}' | '|' | '^' | '`' )* '>' ; //  mult
 
 oS_Duration : Duration ;
 
-Duration : 'P' ( Digit+ 'Y' )? ( Digit+ 'M' )? ( Digit+ 'D' )? 'T' ( Digit+ 'H' )? ( Digit+ 'M' )? ( Digit+ ( '.' Digit+ )? 'S' )? ;
+//todo at least one element in sequence of optional elements (only P should be invalid)
+Duration: 'P' ( Digit+ 'Y' )? ( Digit+ 'M' )? ( Digit+ 'D' )? ('T' ( Digit+ 'H' )? ( Digit+ 'M' )? ( Digit+ ( '.' Digit+ )? 'S' )?)? ;
 
 oS_Period : oS_EventRange | oS_Duration;
 
