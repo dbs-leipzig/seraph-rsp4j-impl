@@ -83,18 +83,6 @@ EXIT : ( 'E' | 'e' ) ( 'X' | 'x' ) ( 'I' | 'i' ) ( 'T' | 't' )  ;
 
 IRIREF  : '<' ~( '<' | '>' | '"' | '{' | '}' | '|' | '^' | '`' )* '>' ; //  multi-character literals are not allowed in lexer sets
 
-ISO8601_DATE_TIME: YEAR MONTH DAY ('T' HOUR MINUTE (SECOND ('.' MICROSECOND)?)? TIMEZONE?)?
-    | YEAR '-' MONTH '-' DAY ('T' HOUR ':' MINUTE (':' SECOND ('.' MICROSECOND)?)? TIMEZONE?)?;
-
-YEAR: [0-9][0-9][0-9][0-9] ;
-MONTH: ( [0][1-9] | [1][0-2] );
-DAY: ( [0][1-9] | [12][0-9] | [3][0-1] ) ;
-HOUR: ( [01][0-9] | [2][0-3] );
-MINUTE: [0-5][0-9] ;
-SECOND: [0-5][0-9] ;
-MICROSECOND: [0-9][0-9][0-9] ;
-TIMEZONE: 'Z' | [+-] HOUR ( ':'? MINUTE )? ;
-
 oS_Duration : Duration ;
 
 Duration : 'P' ( Digit+ 'Y' )? ( Digit+ 'M' )? ( Digit+ 'D' )? 'T' ( Digit+ 'H' )? ( Digit+ 'M' )? ( Digit+ ( '.' Digit+ )? 'S' )? ;
@@ -638,6 +626,20 @@ ExponentDecimalReal
 
 RegularDecimalReal
                   :  ( Digit )* '.' ( Digit )+ ;
+
+
+ISO8601_DATE_TIME: YEAR MONTH DAY ('T' HOUR MINUTE (SECOND ('.' MICROSECOND)?)? TIMEZONE?)?
+    | YEAR '-' MONTH '-' DAY ('T' HOUR ':' MINUTE (':' SECOND ('.' MICROSECOND)?)? TIMEZONE?)?;
+
+YEAR: [0-9][0-9][0-9][0-9] ;
+MONTH: ( [0][1-9] | [1][0-2] );
+DAY: ( [0][1-9] | [12][0-9] | [3][0-1] ) ;
+HOUR: ( [01][0-9] | [2][0-3] );
+MINUTE: [0-5][0-9] ;
+SECOND: [0-5][0-9] ;
+MICROSECOND: [0-9][0-9][0-9] ;
+TIMEZONE: 'Z' | [+-] HOUR ( ':'? MINUTE )? ;
+
 
 oC_SchemaName
           :  oC_SymbolicName
