@@ -43,7 +43,7 @@ public class TestParsing {
 //                14.10.2022 15:40 Uhr --> 1665762000000
 
         ContinuousQuery studentTrick = QueryFactory.parse("" +
-                "REGISTER QUERY student_trick STARTING AT 2022-10-14T14:45 {\n" +
+                "REGISTER QUERY <student_trick> STARTING AT 2022-10-14T14:45 {\n" +
                     "WITH duration({minutes : 5}) as _5m,\n" +
                         "duration({minutes : 20}) as _20m\n" +
                     "MATCH (s:Station)<-[r1:rentedAt]-(b1:Bike)\n" +

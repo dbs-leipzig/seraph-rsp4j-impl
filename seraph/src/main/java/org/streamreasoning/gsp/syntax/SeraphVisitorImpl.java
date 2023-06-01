@@ -1,6 +1,5 @@
 package org.streamreasoning.gsp.syntax;
 
-
 import org.streamreasoning.rsp4j.api.querying.ContinuousQuery;
 
 import java.time.Duration;

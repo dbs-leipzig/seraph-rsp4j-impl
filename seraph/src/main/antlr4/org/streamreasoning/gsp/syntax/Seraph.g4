@@ -28,10 +28,10 @@
 grammar Seraph;
 
 oC_Seraph : oC_Cypher |
-   REGISTER SP? id=IRIREF SP? '{'  SP?
-   oS_S2R SP?
-   oS_R2R SP?
-   oS_R2S SP?
+   REGISTER SP? QUERY SP? id=IRIREF SP? STARTING SP? AT SP? ISO8601_DATE_TIME SP? '{' SP?
+   oC_Statement SP?
+   oS_StreamOp SP?
+   EVERY SP? oS_Duration
   '}' ;
 
 
@@ -44,6 +44,10 @@ oS_R2S: EMIT SP? op=oS_StreamOp SP?
         INTO SP? output=IRIREF;
 
 REGISTER : ( 'R' | 'r' ) ( 'E' | 'e' ) ( 'G' | 'g' ) ( 'I' | 'i' ) ( 'S' | 's' )  ( 'T' | 't' ) ( 'E' | 'e' )  ( 'R' | 'r' )    ;
+
+QUERY : ( 'Q' | 'q' ) ( 'U' | 'u' ) ('E' | 'e') ('R' | 'r') ('Y' | 'y')     ;
+
+T : ('T' | 't');
 
 FROM : ( 'F' | 'f' ) ( 'R' | 'r' ) ( 'O' | 'o' ) ( 'M' | 'm' )    ;
 INTO : ( 'I' | 'i' ) ( 'N' | 'n' )  ( 'T' | 't' ) ( 'O' | 'o' )    ;
@@ -62,9 +66,13 @@ EVERY : ( 'E' | 'e' ) ( 'V' | 'v' ) ( 'E' | 'e' ) ( 'R' | 'r' ) ( 'Y' | 'y' ) ;
 
 CONSTRUCT : ( 'C' | 'c' ) ( 'O' | 'o' ) ( 'N' | 'n' )  ( 'S' | 's' ) ( 'T' | 't' ) ( 'R' | 'r' )  ( 'U' | 'u' )   ( 'C' | 'c' ) ( 'T' | 't' )    ;
 
+WITHIN : ( 'W' | 'w' ) ( 'I' | 'i' ) ( 'T' | 't' ) ( 'H' | 'h' ) ( 'I' | 'i' ) ( 'N' | 'n' );
+
 oS_StreamOp : ON  SP? ENTERING | ON  SP? EXIT | SNAPSHOT ;
 
 STARTING : ( 'S' | 's' ) ( 'T' | 't' ) ( 'A' | 'a' )  ( 'R' | 'r' )  ( 'T' | 't' )  ( 'I' | 'i' )  ( 'N' | 'n' ) ( 'G' | 'g' )   ;
+
+AT : ('A' | 'a') ('T' | 't')    ;
 
 ENTERING : ( 'E' | 'e' ) ( 'N' | 'n' ) ( 'T' | 't' ) ( 'E' | 'e' ) ( 'R' | 'r' )  ( 'I' | 'i' )  ( 'N' | 'n' ) ( 'G' | 'g' )   ;
 
@@ -74,6 +82,18 @@ EXIT : ( 'E' | 'e' ) ( 'X' | 'x' ) ( 'I' | 'i' ) ( 'T' | 't' )  ;
 
 
 IRIREF  : '<' ~( '<' | '>' | '"' | '{' | '}' | '|' | '^' | '`' )* '>' ; //  multi-character literals are not allowed in lexer sets
+
+ISO8601_DATE_TIME: YEAR MONTH DAY ('T' HOUR MINUTE (SECOND ('.' MICROSECOND)?)? TIMEZONE?)?
+    | YEAR '-' MONTH '-' DAY ('T' HOUR ':' MINUTE (':' SECOND ('.' MICROSECOND)?)? TIMEZONE?)?;
+
+YEAR: [0-9][0-9][0-9][0-9] ;
+MONTH: ( [0][1-9] | [1][0-2] );
+DAY: ( [0][1-9] | [12][0-9] | [3][0-1] ) ;
+HOUR: ( [01][0-9] | [2][0-3] );
+MINUTE: [0-5][0-9] ;
+SECOND: [0-5][0-9] ;
+MICROSECOND: [0-9][0-9][0-9] ;
+TIMEZONE: 'Z' | [+-] HOUR ( ':'? MINUTE )? ;
 
 oS_Duration : Duration ;
 
@@ -145,7 +165,7 @@ oC_ReadingClause
                  ;
 
 oC_Match
-     :  ( OPTIONAL SP )? MATCH SP? oC_Pattern ( SP? oC_Where )? ;
+     :  ( OPTIONAL SP )? MATCH SP? oC_Pattern SP? WITHIN SP? oS_Duration ( SP? oC_Where )? ;
 
 OPTIONAL : ( 'O' | 'o' ) ( 'P' | 'p' ) ( 'T' | 't' ) ( 'I' | 'i' ) ( 'O' | 'o' ) ( 'N' | 'n' ) ( 'A' | 'a' ) ( 'L' | 'l' )  ;
 
