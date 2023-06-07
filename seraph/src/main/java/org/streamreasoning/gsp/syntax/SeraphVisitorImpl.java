@@ -12,7 +12,7 @@ public class SeraphVisitorImpl extends SeraphBaseVisitor<ContinuousQuery> {
     private Map<String, S2R> inputs = new HashMap<>();
     private Map<String, R2S> outputs = new HashMap<>();
 
-
+/*
     @Override
     //Gets the input stream and window details from the query
     public ContinuousQuery visitOS_S2R(SeraphParser.OS_S2RContext ctx) {
@@ -45,14 +45,16 @@ public class SeraphVisitorImpl extends SeraphBaseVisitor<ContinuousQuery> {
         return super.visitOS_R2S(ctx);
     }
 
-    //gets the cypher query from the seraph query
+
+
+    //gets the Cypher.g4 query from the seraph query
     @Override
     public ContinuousQuery visitOS_R2R(SeraphParser.OS_R2RContext ctx) {
-        //cypher query
+        //Cypher.g4 query
         this.cypher = ctx.getText();
         return super.visitOS_R2R(ctx);
     }
-
+*/
 
     //returns the parsed seraph query
     public SeraphQL getQuery() {
