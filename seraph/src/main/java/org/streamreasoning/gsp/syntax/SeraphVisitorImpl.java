@@ -53,9 +53,6 @@ public class SeraphVisitorImpl extends SeraphBaseVisitor<ContinuousQuery> {
 
     @Override
     public ContinuousQuery visitOC_Return(SeraphParser.OC_ReturnContext ctx) {
-        System.out.println("ENDING---------------------");
-        System.out.println(ctx.getText());
-        System.out.println();
 
         outputParameters.put("returnStatement", ctx.children.get(0).getText());
         String returnStatement = ctx.children.get(1).getText();
