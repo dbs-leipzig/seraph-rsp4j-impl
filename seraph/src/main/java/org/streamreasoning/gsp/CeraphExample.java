@@ -33,13 +33,13 @@ public class CeraphExample {
 
 
         ContinuousQuery q = QueryFactory.parse("" +
-                "REGISTER <kafka://example> {\n" +
-                "FROM STREAM  <http://stream1> STARTING FROM LATEST\n" +
-                "WITH WINDOW RANGE PT10S\n" +
-                "MATCH (b1:Bike)-[r1:returnedAt]->(s:Station)\n" +
-                "RETURN r1.user_id, r1.permitted\n" +
-                "EMIT SNAPSHOT EVERY PT5S " +
-                "INTO <http://stream2> }\n");
+                "REGISTER QUERY <student_trick> STARTING AT 2022-10-14T14:45 {\n" +
+                "MATCH (b1:Bike)-[r1:rentedAt]->(s:Station)\n" +
+                "WITHIN PT10S\n" +
+                "RETURN r1.user_id\n" +
+                "ON ENTERING\n" +
+                "EVERY PT5S\n" +
+                "}");
 
         //register the parsed seraph query as Neo4jContinuousQueryExecution
         ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, Map<String, Object>> cqe = sr.register(q);

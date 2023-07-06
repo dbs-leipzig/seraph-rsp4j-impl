@@ -55,6 +55,9 @@ public class TestParsing {
                             "(p)<-[r2:rentedAt]-(b2:Bike),\n" +
                             "(b2)-[n2:returnedAt]->(o:Station)\n" +
                             "WITHIN PT1H\n" +
+                            "WITH duration({minutes : 5}) as _5m\n" +
+                            "MATCH (s:Station)<-[r1:rentedAt]-(b1:Bike)\n" +
+                            "WITHIN PT5M\n" +
                             "WHERE r1.user_id = n1.user_id AND\n" +
                             "n1.user_id = r2.user_id AND r2.user_id = n2.user_id AND\n" +
                             "n1.val_time < r2.val_time AND\n" +
@@ -76,9 +79,6 @@ public class TestParsing {
         } catch (RuntimeException e) {
             System.out.println(e);
         }
-
-
-
 
 
 

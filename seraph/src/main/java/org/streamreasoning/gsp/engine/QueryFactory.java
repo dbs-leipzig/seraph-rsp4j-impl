@@ -20,7 +20,6 @@ public class QueryFactory {
 
     public static ContinuousQuery parse(String queryString) throws IOException {
 
-        System.out.println(queryString);
         InputStream inputStream = new ByteArrayInputStream(queryString.getBytes());
         return parse(inputStream);
     }

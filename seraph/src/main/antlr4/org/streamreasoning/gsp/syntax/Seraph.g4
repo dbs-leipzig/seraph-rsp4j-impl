@@ -96,7 +96,9 @@ oC_ReadingClause
                  ;
 
 oC_Match
-     :  ( OPTIONAL SP )? MATCH SP? oC_Pattern SP? WITHIN SP? ISO8601_DURATION ( SP? oC_Where )? ;
+     :  ( OPTIONAL SP )? MATCH SP? oC_Pattern SP? oC_Within ( SP? oC_Where )? ;
+
+oC_Within : WITHIN SP? ISO8601_DURATION  ;
 
 OPTIONAL : ( 'O' | 'o' ) ( 'P' | 'p' ) ( 'T' | 't' ) ( 'I' | 'i' ) ( 'O' | 'o' ) ( 'N' | 'n' ) ( 'A' | 'a' ) ( 'L' | 'l' ) ;
 
