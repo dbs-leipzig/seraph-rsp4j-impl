@@ -1,18 +1,17 @@
 package org.streamreasoning.gsp;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.streamreasoning.gsp.data.PGStream;
 import org.streamreasoning.gsp.data.PGraph;
 import org.streamreasoning.gsp.data.Source;
 import org.streamreasoning.gsp.engine.*;
 import org.streamreasoning.rsp4j.api.engine.config.EngineConfiguration;
 import org.streamreasoning.rsp4j.api.querying.ContinuousQuery;
 import org.streamreasoning.rsp4j.api.querying.ContinuousQueryExecution;
-import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class CeraphExample {
 
@@ -52,16 +51,19 @@ public class CeraphExample {
 
 
         //add Consumer to the outstream that outputs the timestamp, key and value for each update of the output stream
-        //cqe.outstream().addConsumer((arg, ts) -> System.out.println(ts + "---> (" + arg + ")"));
-        cqe.outstream().addConsumer((arg, ts) -> arg.forEach((k, v) -> System.out.println(ts + " ---> (" + k + "," + v + ")")));
+        AtomicLong consideredTime = new AtomicLong();
+        cqe.outstream().addConsumer((arg, ts) ->
+                {
+                    // pretty console log
+                    if(consideredTime.get() != ts){
+                        System.out.println("---------------------");
+                        consideredTime.set(ts);
+                    }
 
+                    arg.forEach((k, v) -> System.out.println(ts + " ---> (" + k + "," + v + ")"));
 
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println("-----------------------------");
-            }
-        }, 5000, 5000);
+                }
+        );
+
     }
 }
