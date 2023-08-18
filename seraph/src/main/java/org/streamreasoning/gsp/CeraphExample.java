@@ -12,10 +12,7 @@ import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class CeraphExample {
 
@@ -41,6 +38,10 @@ public class CeraphExample {
                 "EVERY PT5S\n" +
                 "}");
 
+
+        q.setInputStream("http://stream1");
+        q.setOutputStream("http://stream2");
+
         //register the parsed seraph query as Neo4jContinuousQueryExecution
         ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, Map<String, Object>> cqe = sr.register(q);
 
@@ -52,7 +53,7 @@ public class CeraphExample {
 
         //add Consumer to the outstream that outputs the timestamp, key and value for each update of the output stream
         //cqe.outstream().addConsumer((arg, ts) -> System.out.println(ts + "---> (" + arg + ")"));
-        cqe.outstream().addConsumer((arg, ts) -> arg.forEach((k, v) -> System.out.println(ts + "---> (" + k + "," + v + ")")));
+        cqe.outstream().addConsumer((arg, ts) -> arg.forEach((k, v) -> System.out.println(ts + " ---> (" + k + "," + v + ")")));
 
 
         Timer timer = new Timer();

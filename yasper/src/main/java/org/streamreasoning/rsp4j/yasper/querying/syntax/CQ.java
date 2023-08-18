@@ -25,6 +25,11 @@ public class CQ<O> implements RSPQL<O> {
     }
 
     @Override
+    public void setInputStream(String uri) {
+
+    }
+
+    @Override
     public void setIstream() {
 
     }

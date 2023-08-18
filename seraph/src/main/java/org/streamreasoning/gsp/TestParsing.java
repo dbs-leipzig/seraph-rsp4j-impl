@@ -5,6 +5,8 @@ package org.streamreasoning.gsp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -42,8 +44,6 @@ public class TestParsing {
 //                14.10.2022 15:20 Uhr --> 1665760800000
 //                14.10.2022 15:40 Uhr --> 1665762000000
 
-        System.out.println("----------TEST PARSING----------");
-
         try {
 
             ContinuousQuery studentTrick = QueryFactory.parse(
@@ -70,6 +70,9 @@ public class TestParsing {
                             "}"
             );
 
+
+            studentTrick.setInputStream("http://stream1");
+            studentTrick.setOutputStream("http://stream2");
 
             //register the parsed seraph query as Neo4jContinuousQueryExecution
             ContinuousQueryExecution<PGraph, PGraph, Map<String, Object>, Map<String, Object>> cqe = sr.register(studentTrick);

@@ -12,10 +12,7 @@ import org.streamreasoning.rsp4j.api.sds.EmptyDataSet;
 import org.streamreasoning.rsp4j.api.secret.time.Time;
 import org.streamreasoning.rsp4j.api.stream.data.DataStream;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * TODO: This interface needs to be updated to contain setter and getters for all relevant query parts.
@@ -23,6 +20,9 @@ import java.util.Map;
 public interface ContinuousQuery<I, W, R, O> {//extends Task<I, Binding, O> {
 
     void addNamedWindow(String streamUri, WindowNode wo);
+
+    //TODO: support multiple input streams
+    void setInputStream(String uri);
 
     void setIstream();
 

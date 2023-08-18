@@ -29,10 +29,9 @@ public class SeraphVisitorImpl extends SeraphBaseVisitor<ContinuousQuery> {
         // *S2R Part
         inputParameters.put("identifier", ctx.id.getText().replace("<", "").replace(">", ""));
 
-        //TODO Setter for output stream
-        String input = "http://stream1";
+        String defaultInputStream = null;
 
-        inputParameters.put("input", input);
+        inputParameters.put("input", defaultInputStream);
         inputParameters.put("starting", ctx.starting_time.getText());
 
 
@@ -40,10 +39,9 @@ public class SeraphVisitorImpl extends SeraphBaseVisitor<ContinuousQuery> {
         Duration period = Duration.parse(ctx.range.getText().trim());
         String streamOperator = ctx.stream_op.getText();
 
-        //TODO Setter for output stream
-        String outputStream = "http://stream2";
+        String defaultOutputStream = null;
 
-        outputParameters.put("output", outputStream);
+        outputParameters.put("output", defaultOutputStream);
         outputParameters.put("period", period.toString());
         outputParameters.put("streamOperator", streamOperator);
 

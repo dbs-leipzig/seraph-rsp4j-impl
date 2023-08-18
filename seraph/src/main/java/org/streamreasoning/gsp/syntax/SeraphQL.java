@@ -38,6 +38,17 @@ public class SeraphQL implements ContinuousQuery {
     }
 
     @Override
+    public void setInputStream(String uri) {
+
+        S2R s2r = inputs.entrySet().iterator().next().getValue();
+
+        inputs.clear();
+        inputs.put(uri, s2r);
+
+    }
+
+
+    @Override
     public void setIstream() {
 
     }
@@ -88,9 +99,15 @@ public class SeraphQL implements ContinuousQuery {
     }
 
     @Override
-    public void setOutputStream(String s) {
+    public void setOutputStream(String uri) {
 
+        R2S r2s = outputs.entrySet().iterator().next().getValue();
+
+        //TODO change map to list data structure because of possible duplicated keys
+        outputs.clear();
+        outputs.put(uri, r2s);
     }
+
 
     @Override
     public DataStream getOutputStream() {
