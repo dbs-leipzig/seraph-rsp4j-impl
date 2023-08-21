@@ -1,48 +1,43 @@
-# RDF Stream Processing for Java (RSP4J) ![Alt text](./figs/rsp4jLogo.svg)
-[![DOI](https://zenodo.org/badge/322566440.svg)](https://zenodo.org/badge/latestdoi/322566440)
+# Seraph: Continuous Queries on Property Graph Streams
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+> This proof-of-concept implementation is currently under development.
 
+Seraph is a query language that extends Cypher with stream semantics to register continuous queries on 
+property graph streams. In this proof-of-concept implementation we are using Neo4j and RSP4J as a base.
 
-
-RSP4J is a library to build RDF Stream Processing (RSP) Engines according with the reference model
+RSP4J is a library to build RDF Stream Processing (RSP) Engines according to the reference model
 RSP-QL [1](http://jeanpi.org/wp/media/rspql_ijswis_dellaglio_2015.pdf).
 
-RSP4J is inspired by the OWL API, and other work that aim at spreading the Semantic Web (Stream Reasoning) research by
-means of practical and usable software tools.
+## Example Seraph Query
 
-In this repository, the following projects are present:
-
-* [API](./api/Readme.md), which contains the interfaces and abstractions required to develop your RSP engine.
-* [yasper](./yasper/Readme.md), which is an reference implementation that aims at showing the API usage by providing
-  org.streamreasoning.rsp4j.yasper.examples.
-
-Futher adoption of YASPER will be listed below.
-
-A on-going [documentation](https://github.com/streamreasoning/rsp4j/wiki) is also available.
-
-RSP4J and YASPER are open and ongoing projects. Welcome adoption as well as suggestion or request.
-
-## Install Using Maven
-
-```xml
- <repositories>
-   <repository>
-    <id>jitpack.io</id>
-       <url>https://jitpack.io</url>
-   </repository>
-
-<dependency>
-  <groupId>com.github.streamreasoning.rsp4j</groupId>
-  <artifactId>api</artifactId>
-   <version>1.0.0</version>
-</dependency>
-  
-and 
-  
-<dependency>
-  <groupId>com.github.streamreasoning.rsp4j</groupId>
-  <artifactId>yasper</artifactId>
-   <version>1.0.0</version>
-</dependency>
+```sql
+REGISTER QUERY student_trick STARTING AT 2022-10-14T14:45 {
+  MATCH (:Bike)-[r:rentedAt]->(s:Station),
+      q = (b)-[:returnedAt|rentedAt*3..]-(o:Station) 
+  WITHIN PT1H 
+  WITH r, s, q, relationships(q) as edges, 
+    [n IN nodes(q) WHERE 'Station' IN labels(n) | n.id] as hopStations 
+  WHERE ALL(e IN edges WHERE 
+    e.user_id = r.user_id AND e.val_time > r.val_time AND 
+    (e.duration IS NULL OR e.duration < 20) ) 
+  EMIT r.user_id, s.id, r.val_time, hopStations 
+  ON ENTERING 
+  EVERY PT5M 
+}
 ```
 
+## License
+    Copyright 2023 Lyon 1 University & University of Leipzig
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+      http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.

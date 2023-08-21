@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>seraph</artifactId>
+    <description>A continuous query language for property graph streams.</description>
     <version>${rsp4j.version}</version>
 
     <properties>
@@ -19,14 +20,11 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.streamreasoning.rsp4j</groupId>
             <artifactId>api</artifactId>
             <version>${rsp4j.version}</version>
         </dependency>
-
-
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
@@ -91,34 +89,11 @@
                         <configuration>
                             <sourceDirectory>${project.basedir}/src/main/resources/avro</sourceDirectory>
                             <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
-                            <!--                            <stringType>String</stringType>-->
-                            <!--                            <createSetters>false</createSetters>-->
-                            <!--                            <enableDecimalLogicalType>true</enableDecimalLogicalType>-->
-                            <!--                            <fieldVisibility>private</fieldVisibility>-->
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <!--force discovery of generated classes-->
-            <!--            <plugin>-->
-            <!--                <groupId>org.codehaus.mojo</groupId>-->
-            <!--                <artifactId>build-helper-maven-plugin</artifactId>-->
-            <!--                <version>3.0.0</version>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <id>add-source</id>-->
-            <!--                        <phase>generate-sources</phase>-->
-            <!--                        <goals>-->
-            <!--                            <goal>add-source</goal>-->
-            <!--                        </goals>-->
-            <!--                        <configuration>-->
-            <!--                            <sources>-->
-            <!--                                <source>target/generated-sources/avro/ee/ut/dsg/seraph/kafka</source>-->
-            <!--                            </sources>-->
-            <!--                        </configuration>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
+
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>

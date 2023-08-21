@@ -13,7 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class CeraphExample {
+public class SeraphExample {
 
     static Seraph sr;
 
